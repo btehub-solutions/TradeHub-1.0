@@ -5,7 +5,7 @@ import { Listing, CATEGORY_ICONS } from '@/lib/supabase'
 import { getListingById } from '@/lib/clientStorage'
 import Link from 'next/link'
 import { notFound, useParams } from 'next/navigation'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, MapPin, MessageCircle, User, Phone, Package } from 'lucide-react'
 
 export default function ListingDetailPage() {
   const params = useParams()
@@ -67,7 +67,7 @@ export default function ListingDetailPage() {
             <img
               src={displayImages[currentImageIndex]}
               alt={`${listing.title} - Image ${currentImageIndex + 1}`}
-              className="w-full h-96 object-cover"
+              className="w-full h-96 object-contain bg-gray-100"
             />
             
             {/* Navigation Arrows */}
@@ -118,10 +118,10 @@ export default function ListingDetailPage() {
 
         <div className="p-6">
           {/* Category Badge */}
-          <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mb-4">
-            <span className="mr-1">{CATEGORY_ICONS[listing.category] || '📦'}</span>
+          <div className="inline-flex items-center bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+            <Package className="w-4 h-4 mr-2" />
             {listing.category}
-          </span>
+          </div>
 
           <h1 className="text-3xl font-bold mb-4">{listing.title}</h1>
 
@@ -129,7 +129,10 @@ export default function ListingDetailPage() {
             <p className="text-4xl font-bold text-blue-600">
               ₦{listing.price.toLocaleString()}
             </p>
-            <p className="text-gray-600">📍 {listing.location}</p>
+            <div className="flex items-center text-gray-600">
+              <MapPin className="w-5 h-5 mr-1.5" />
+              {listing.location}
+            </div>
           </div>
 
           <div className="mb-6">
@@ -140,22 +143,33 @@ export default function ListingDetailPage() {
           </div>
 
           <div className="border-t pt-6 mb-6">
-            <h2 className="text-xl font-semibold mb-3">Seller Information</h2>
-            <p className="text-gray-700">
-              <strong>Name:</strong> {listing.seller_name}
-            </p>
-            <p className="text-gray-700">
-              <strong>Phone:</strong> {listing.seller_phone}
-            </p>
+            <h2 className="text-xl font-semibold mb-4">Seller Information</h2>
+            <div className="space-y-3">
+              <div className="flex items-center text-gray-700">
+                <User className="w-5 h-5 mr-3 text-gray-400" />
+                <div>
+                  <p className="text-xs text-gray-500">Name</p>
+                  <p className="font-medium">{listing.seller_name}</p>
+                </div>
+              </div>
+              <div className="flex items-center text-gray-700">
+                <Phone className="w-5 h-5 mr-3 text-gray-400" />
+                <div>
+                  <p className="text-xs text-gray-500">Phone</p>
+                  <p className="font-medium">{listing.seller_phone}</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full bg-green-500 hover:bg-green-600 text-white text-center py-4 rounded-lg font-semibold text-lg"
+            className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-lg font-semibold text-lg transition-colors"
           >
-            💬 Contact Seller on WhatsApp
+            <MessageCircle className="w-5 h-5 mr-2" />
+            Contact Seller on WhatsApp
           </a>
         </div>
       </div>

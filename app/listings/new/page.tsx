@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Upload, Loader2, Camera, X } from 'lucide-react'
+import { ArrowLeft, Upload, Loader2, X } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import Link from 'next/link'
 import { CATEGORIES, CATEGORY_ICONS } from '@/lib/supabase'
@@ -12,10 +12,6 @@ export default function NewListingPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [images, setImages] = useState<string[]>([])
-  const [showCamera, setShowCamera] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const streamRef = useRef<MediaStream | null>(null)
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -25,15 +21,6 @@ export default function NewListingPage() {
     seller_phone: '',
     category: 'Electronics'
   })
-
-  // Cleanup camera stream on unmount
-  useEffect(() => {
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop())
-      }
-    }
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -89,62 +76,6 @@ export default function NewListingPage() {
 
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index))
-  }
-
-  const startCamera = async () => {
-    try {
-      // Try back camera first (mobile), then fallback to any camera
-      let stream: MediaStream | null = null
-      
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: 'environment' } 
-        })
-      } catch (e) {
-        // Fallback to front camera or default camera
-        stream = await navigator.mediaDevices.getUserMedia({ 
-          video: true 
-        })
-      }
-      
-      if (videoRef.current && stream) {
-        videoRef.current.srcObject = stream
-        streamRef.current = stream
-        setShowCamera(true)
-      }
-    } catch (error) {
-      console.error('Error accessing camera:', error)
-      alert('Could not access camera. Please:\n1. Allow camera permissions in your browser\n2. Make sure you\'re using HTTPS or localhost\n3. Check if another app is using the camera')
-    }
-  }
-
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop())
-      streamRef.current = null
-    }
-    setShowCamera(false)
-  }
-
-  const capturePhoto = () => {
-    if (images.length >= 5) {
-      alert('Maximum 5 images allowed')
-      return
-    }
-
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current
-      const canvas = canvasRef.current
-      canvas.width = video.videoWidth
-      canvas.height = video.videoHeight
-      const ctx = canvas.getContext('2d')
-      if (ctx) {
-        ctx.drawImage(video, 0, 0)
-        const base64Image = canvas.toDataURL('image/jpeg', 0.8)
-        setImages(prev => [...prev, base64Image])
-        stopCamera()
-      }
-    }
   }
 
   const postCategories = CATEGORIES.filter(cat => cat !== 'All')
@@ -325,67 +256,24 @@ export default function NewListingPage() {
                 </div>
               )}
 
-              {showCamera ? (
-                <div className="relative bg-black rounded-xl overflow-hidden">
-                  <video 
-                    ref={videoRef}
-                    autoPlay
-                    playsInline
-                    className="w-full h-96 object-cover"
-                  />
-                  <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
-                    <button
-                      type="button"
-                      onClick={capturePhoto}
-                      className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-lg font-semibold"
-                      disabled={images.length >= 5}
-                    >
-                      📸 Capture Photo {images.length > 0 && `(${images.length}/5)`}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={stopCamera}
-                      className="px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg font-semibold"
-                    >
-                      Done
-                    </button>
-                  </div>
-                  <canvas ref={canvasRef} className="hidden" />
+              {/* File Upload */}
+              <label className={`cursor-pointer ${images.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                  className="hidden"
+                  disabled={images.length >= 5}
+                />
+                <div className="flex flex-col items-center justify-center p-12 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 hover:border-blue-400 transition-all">
+                  <Upload className="w-12 h-12 text-gray-400 mb-3" />
+                  <span className="text-base font-semibold text-gray-700">Upload Photos</span>
+                  <span className="text-sm text-gray-500 mt-1">
+                    {images.length > 0 ? `${images.length}/5 images` : 'Click to select from your files'}
+                  </span>
                 </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* File Upload */}
-                  <label className={`cursor-pointer ${images.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImageChange}
-                      className="hidden"
-                      disabled={images.length >= 5}
-                    />
-                    <div className="flex flex-col items-center justify-center p-8 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 hover:border-blue-400 transition-all">
-                      <Upload className="w-10 h-10 text-gray-400 mb-3" />
-                      <span className="text-sm font-semibold text-gray-700">Upload Photos</span>
-                      <span className="text-xs text-gray-500 mt-1">
-                        {images.length > 0 ? `${images.length}/5 images` : 'From your files'}
-                      </span>
-                    </div>
-                  </label>
-
-                  {/* Live Camera */}
-                  <button
-                    type="button"
-                    onClick={startCamera}
-                    disabled={images.length >= 5}
-                    className={`flex flex-col items-center justify-center p-8 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 hover:border-blue-400 transition-all cursor-pointer ${images.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  >
-                    <Camera className="w-10 h-10 text-gray-400 mb-3" />
-                    <span className="text-sm font-semibold text-gray-700">Live Camera</span>
-                    <span className="text-xs text-gray-500 mt-1">Take photos</span>
-                  </button>
-                </div>
-              )}
+              </label>
               
               <p className="text-xs text-gray-500 flex items-start mt-2">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 mr-2"></span>
