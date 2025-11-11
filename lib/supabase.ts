@@ -1,13 +1,18 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-// Only create client if credentials are provided
-export const supabase = supabaseUrl && supabaseKey 
-  ? createClient(supabaseUrl, supabaseKey)
-  : null
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined
+  }
+})
 
+// Types
 export type Listing = {
   id: string
   title: string
@@ -19,10 +24,17 @@ export type Listing = {
   image_url: string | null
   images?: string[]  // Multiple images support
   category: string
+  status: 'available' | 'sold'
+  user_id: string
   created_at: string
 }
 
-// Define available categories
+export type User = {
+  id: string
+  email: string
+}
+
+// Categories
 export const CATEGORIES = [
   'All',
   'Electronics',
@@ -44,4 +56,22 @@ export const CATEGORY_ICONS: Record<string, string> = {
   'Furniture': 'Armchair',
   'Fashion': 'Shirt',
   'Other': 'Package'
+}
+
+// Auth helpers
+export const getCurrentUser = async () => {
+  const { data: { user }, error } = await supabase.auth.getUser()
+  return { user, error }
+}
+
+export const signUp = async (email: string, password: string) => {
+  return await supabase.auth.signUp({ email, password })
+}
+
+export const signIn = async (email: string, password: string) => {
+  return await supabase.auth.signInWithPassword({ email, password })
+}
+
+export const signOut = async () => {
+  return await supabase.auth.signOut()
 }

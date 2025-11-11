@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server'
-import { getAllListings, createListing } from '@/lib/mockData'
+import { supabase } from '@/lib/supabase'
 
 export async function GET() {
   try {
-    const data = getAllListings()
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('status', 'available')
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+
     return NextResponse.json(data)
   } catch (error) {
     console.error('Error fetching listings:', error)
@@ -18,25 +25,26 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
 
-    // Validate required fields
-    if (!body.title || !body.description || !body.price || !body.location || !body.seller_name || !body.seller_phone) {
+    // Ensure user_id is present
+    if (!body.user_id) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
+        { error: 'User authentication required' },
+        { status: 401 }
       )
     }
 
-    const newListing = createListing({
-      title: body.title,
-      description: body.description,
-      price: Number(body.price),
-      location: body.location,
-      seller_name: body.seller_name,
-      seller_phone: body.seller_phone,
-      image_url: body.image_url || null
-    })
+    const { data, error } = await supabase
+      .from('listings')
+      .insert({
+        ...body,
+        status: 'available'
+      })
+      .select()
+      .single()
 
-    return NextResponse.json(newListing, { status: 201 })
+    if (error) throw error
+
+    return NextResponse.json(data, { status: 201 })
   } catch (error) {
     console.error('Error creating listing:', error)
     return NextResponse.json(

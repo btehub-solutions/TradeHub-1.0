@@ -1,15 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Upload, Loader2, X } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import Link from 'next/link'
 import { CATEGORIES, CATEGORY_ICONS } from '@/lib/supabase'
-import { addListing } from '@/lib/clientStorage'
+import { useAuth } from '@/lib/AuthProvider'
 
 export default function NewListingPage() {
   const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
   const [loading, setLoading] = useState(false)
   const [images, setImages] = useState<string[]>([])
   const [formData, setFormData] = useState({
@@ -22,24 +23,37 @@ export default function NewListingPage() {
     category: 'Electronics'
   })
 
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      alert('Please sign in to post a listing')
+      router.push('/auth/signin')
+    }
+  }, [user, authLoading, router])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      addListing({
-        title: formData.title,
-        description: formData.description,
-        price: parseFloat(formData.price),
-        location: formData.location,
-        seller_name: formData.seller_name,
-        seller_phone: formData.seller_phone,
-        image_url: images.length > 0 ? images[0] : null,
-        images: images.length > 0 ? images : undefined,
-        category: formData.category
+      const response = await fetch('/api/listings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          price: parseFloat(formData.price),
+          user_id: user?.id,
+          image_url: images.length > 0 ? images[0] : null,
+          images: images.length > 0 ? images : undefined
+        })
       })
-      
-      router.push('/')
+
+      if (response.ok) {
+        alert('Item posted successfully!')
+        router.push('/dashboard')
+      } else {
+        alert('Error posting item. Please try again.')
+      }
     } catch (error) {
       console.error('Error:', error)
       alert('Error posting item. Please try again.')
@@ -83,6 +97,14 @@ export default function NewListingPage() {
   const getIcon = (iconName: string) => {
     const IconComponent = Icons[iconName as keyof typeof Icons] as any
     return IconComponent || Icons.Package
+  }
+
+  if (authLoading || !user) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-8">
+        <p className="text-center text-gray-500">Loading...</p>
+      </div>
+    )
   }
 
   return (
