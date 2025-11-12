@@ -18,7 +18,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/auth/signin')
+      router.replace('/auth/signin')
     }
   }, [user, authLoading, router])
 
@@ -26,6 +26,7 @@ export default function DashboardPage() {
     if (user) {
       fetchMyListings()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
   const fetchMyListings = async () => {
@@ -166,7 +167,7 @@ export default function DashboardPage() {
       {listings.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-2xl shadow-soft">
           <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500 text-lg mb-4">You haven't posted any items yet</p>
+          <p className="text-gray-500 text-lg mb-4">You haven&apos;t posted any items yet</p>
           <Link href="/listings/new">
             <button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all">
               Post Your First Item

@@ -1,7 +1,7 @@
 import { Listing } from './supabase'
 
 // Mock data store for testing without Supabase
-export const mockListings: Listing[] = [
+export const mockListings: Listing[] = ([
   // ELECTRONICS (IDs 1-8)
   {
     id: '1',
@@ -13,6 +13,8 @@ export const mockListings: Listing[] = [
     seller_phone: '08012345678',
     image_url: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop',
     category: 'Electronics',
+    status: 'available' as const,
+    user_id: 'mock-user-1',
     created_at: new Date('2024-11-01').toISOString()
   },
   {
@@ -371,7 +373,11 @@ export const mockListings: Listing[] = [
     category: 'Other',
     created_at: new Date('2024-11-17').toISOString()
   }
-]
+] as any[]).map((listing: any) => ({
+  ...listing,
+  status: listing.status || 'available',
+  user_id: listing.user_id || 'mock-user-1'
+})) as Listing[]
 
 // Storage key for localStorage
 const STORAGE_KEY = 'tradehub_listings'

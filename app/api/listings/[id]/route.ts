@@ -3,10 +3,11 @@ import { getListingById } from '@/lib/mockData'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const listing = getListingById(params.id)
+    const { id } = await params
+    const listing = getListingById(id)
 
     if (!listing) {
       return NextResponse.json(

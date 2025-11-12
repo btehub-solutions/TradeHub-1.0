@@ -9,6 +9,14 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
     storage: typeof window !== 'undefined' ? window.localStorage : undefined
+  },
+  db: {
+    schema: 'public'
+  },
+  global: {
+    headers: {
+      'x-client-info': 'tradehub-app'
+    }
   }
 })
 

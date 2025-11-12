@@ -27,12 +27,19 @@ export default function NewListingPage() {
   useEffect(() => {
     if (!authLoading && !user) {
       alert('Please sign in to post a listing')
-      router.push('/auth/signin')
+      router.replace('/auth/signin')
     }
   }, [user, authLoading, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!user) {
+      alert('Please sign in to post a listing')
+      router.replace('/auth/signin')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -42,22 +49,25 @@ export default function NewListingPage() {
         body: JSON.stringify({
           ...formData,
           price: parseFloat(formData.price),
-          user_id: user?.id,
+          user_id: user.id,
           image_url: images.length > 0 ? images[0] : null,
-          images: images.length > 0 ? images : undefined
+          images: images.length > 0 ? images : null
         })
       })
 
+      const data = await response.json()
+
       if (response.ok) {
         alert('Item posted successfully!')
-        router.push('/dashboard')
+        router.replace('/dashboard')
       } else {
-        alert('Error posting item. Please try again.')
+        const errorMessage = data.error || 'Error posting item. Please try again.'
+        alert(errorMessage)
+        setLoading(false)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error)
-      alert('Error posting item. Please try again.')
-    } finally {
+      alert(error.message || 'Error posting item. Please try again.')
       setLoading(false)
     }
   }

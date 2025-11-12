@@ -38,19 +38,25 @@ export default function SignUpPage() {
 
       if (error) {
         setError(error.message)
+        setLoading(false)
+      } else if (data.session) {
+        // User is automatically signed in (email confirmation disabled)
+        alert('Account created successfully!')
+        setTimeout(() => {
+          window.location.href = '/dashboard'
+        }, 500)
+      } else if (data.user) {
+        // Email confirmation required
+        alert('Account created! Please check your email to verify your account.')
+        setTimeout(() => {
+          window.location.href = '/auth/signin'
+        }, 500)
       } else {
-        // Check if user is automatically signed in (email confirmation disabled)
-        if (data.session) {
-          alert('Account created successfully! Redirecting to dashboard...')
-          router.push('/dashboard')
-        } else {
-          alert('Account created! Please check your email to verify your account.')
-          router.push('/auth/signin')
-        }
+        setError('Failed to create account. Please try again.')
+        setLoading(false)
       }
     } catch (err: any) {
       setError(err.message || 'Failed to create account')
-    } finally {
       setLoading(false)
     }
   }

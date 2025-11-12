@@ -46,18 +46,35 @@ CREATE TABLE listings (
   location TEXT NOT NULL,
   seller_name TEXT NOT NULL,
   seller_phone TEXT NOT NULL,
+  category TEXT DEFAULT 'Other',
   image_url TEXT,
+  images JSONB,
+  user_id UUID REFERENCES auth.users(id),
+  status TEXT DEFAULT 'available',
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Allow anyone to read and insert (no auth needed)
+-- Enable Row Level Security
 ALTER TABLE listings ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Anyone can view listings" ON listings
-  FOR SELECT USING (true);
+-- Create indexes for better performance
+CREATE INDEX idx_listings_user_id ON listings(user_id);
+CREATE INDEX idx_listings_status ON listings(status);
+CREATE INDEX idx_listings_category ON listings(category);
+CREATE INDEX idx_listings_created_at ON listings(created_at DESC);
 
-CREATE POLICY "Anyone can insert listings" ON listings
-  FOR INSERT WITH CHECK (true);
+-- RLS Policies
+CREATE POLICY "Anyone can view available listings" ON listings
+  FOR SELECT USING (status = 'available' OR user_id = auth.uid());
+
+CREATE POLICY "Authenticated users can insert listings" ON listings
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own listings" ON listings
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own listings" ON listings
+  FOR DELETE USING (auth.uid() = user_id);
 ```
 
 ### 3. Configure Environment Variables

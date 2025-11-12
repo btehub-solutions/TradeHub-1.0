@@ -26,15 +26,18 @@ export default function SignInPage() {
 
       if (error) {
         setError(error.message)
+        setLoading(false)
+      } else if (data.session) {
+        // Successfully signed in, wait a moment for auth state to update
+        setTimeout(() => {
+          window.location.href = '/dashboard'
+        }, 500)
       } else {
-        // Wait a bit for auth state to update
-        await new Promise(resolve => setTimeout(resolve, 500))
-        router.push('/dashboard')
-        router.refresh()
+        setError('Failed to sign in. Please try again.')
+        setLoading(false)
       }
     } catch (err: any) {
       setError(err.message || 'Failed to sign in')
-    } finally {
       setLoading(false)
     }
   }
@@ -107,7 +110,7 @@ export default function SignInPage() {
 
           <div className="mt-6 text-center">
             <p className="text-gray-600 text-sm">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link href="/auth/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
                 Sign Up
               </Link>
