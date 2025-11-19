@@ -1,14 +1,37 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY
 
-// Create a single supabase client for all requests
-const supabase = createClient(supabaseUrl, supabaseKey)
+let supabase: SupabaseClient | null = null
+
+const getSupabaseClient = () => {
+  if (supabase) return supabase
+
+  if (!supabaseUrl || !supabaseKey) {
+    console.error(
+      'Supabase credentials are missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_URL/SUPABASE_ANON_KEY) in your environment.'
+    )
+    return null
+  }
+
+  supabase = createClient(supabaseUrl, supabaseKey)
+  return supabase
+}
 
 export async function GET() {
   try {
+    const supabase = getSupabaseClient()
+
+    if (!supabase) {
+      return NextResponse.json([], {
+        headers: {
+          'x-tradehub-warning': 'Supabase credentials missing'
+        }
+      })
+    }
+
     const { data, error } = await supabase
       .from('listings')
       .select('*')
@@ -31,6 +54,15 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const supabase = getSupabaseClient()
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Supabase is not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.' },
+        { status: 503 }
+      )
+    }
+
     const body = await request.json()
 
     console.log('Received listing data:', body)
