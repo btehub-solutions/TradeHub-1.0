@@ -46,6 +46,7 @@ Before deploying, ensure:
    - Click "Import"
 
 3. **Configure Project**
+   ℹ️ The repo now includes a `vercel.json` so Dashboard and CLI deploys consistently use `npm install`, `npm run build`, and output `.next`.
    - **Framework Preset**: Next.js (auto-detected)
    - **Root Directory**: `./` (leave as default)
    - **Build Command**: `npm run build` (auto-filled)
@@ -77,12 +78,12 @@ Before deploying, ensure:
 ### Step 4: Test Production
 
 Visit your production URL and test:
-- ✅ Homepage loads
-- ✅ Listings display correctly
-- ✅ Can create new listing
-- ✅ Can view listing details
-- ✅ WhatsApp button works
-- ✅ Images load properly
+- Homepage loads
+- Listings display correctly
+- Can create new listing
+- Can view listing details
+- WhatsApp button works
+- Images load properly
 
 ## Option 2: Deploy via Vercel CLI
 
