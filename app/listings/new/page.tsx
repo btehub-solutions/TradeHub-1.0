@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Upload, Loader2, X } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import Link from 'next/link'
 import { CATEGORIES, CATEGORY_ICONS } from '@/lib/supabase'
 import { useAuth } from '@/lib/AuthProvider'
+import { toast } from 'react-hot-toast'
 
 export default function NewListingPage() {
   const router = useRouter()
@@ -26,16 +27,31 @@ export default function NewListingPage() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
-      alert('Please sign in to post a listing')
+      toast.error('Please sign in to post a listing')
       router.replace('/auth/signin')
     }
   }, [user, authLoading, router])
+
+  const initialFormState = useMemo(() => ({
+    title: '',
+    description: '',
+    price: '',
+    location: '',
+    seller_name: '',
+    seller_phone: '',
+    category: 'Electronics'
+  }), [])
+
+  const resetForm = () => {
+    setFormData(initialFormState)
+    setImages([])
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!user) {
-      alert('Please sign in to post a listing')
+      toast.error('Please sign in to post a listing')
       router.replace('/auth/signin')
       return
     }
@@ -43,6 +59,7 @@ export default function NewListingPage() {
     setLoading(true)
 
     try {
+      const toastId = toast.loading('Posting your item...')
       const response = await fetch('/api/listings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -58,16 +75,17 @@ export default function NewListingPage() {
       const data = await response.json()
 
       if (response.ok) {
-        alert('Item posted successfully!')
+        toast.success('Item posted successfully!', { id: toastId })
+        resetForm()
         router.replace('/dashboard')
       } else {
         const errorMessage = data.error || 'Error posting item. Please try again.'
-        alert(errorMessage)
+        toast.error(errorMessage, { id: toastId })
         setLoading(false)
       }
     } catch (error: any) {
       console.error('Error:', error)
-      alert(error.message || 'Error posting item. Please try again.')
+      toast.error(error.message || 'Error posting item. Please try again.')
       setLoading(false)
     }
   }
@@ -76,16 +94,17 @@ export default function NewListingPage() {
     const files = e.target.files
     if (!files) return
 
-    // Check if adding these files would exceed 5 images
-    if (images.length + files.length > 5) {
-      alert('Maximum 5 images allowed')
+    const MAX_IMAGES = 5
+    const MAX_SIZE_MB = 5 * 1024 * 1024
+
+    if (images.length + files.length > MAX_IMAGES) {
+      toast.error(`Maximum ${MAX_IMAGES} images allowed`)
       return
     }
 
     Array.from(files).forEach(file => {
-      // Check file size (limit to 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert(`${file.name} is too large. Maximum 5MB per image.`)
+      if (file.size > MAX_SIZE_MB) {
+        toast.error(`${file.name} is too large. Maximum 5MB per image.`)
         return
       }
 
@@ -100,6 +119,7 @@ export default function NewListingPage() {
 
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index))
+    toast.success('Image removed')
   }
 
   const postCategories = CATEGORIES.filter(cat => cat !== 'All')

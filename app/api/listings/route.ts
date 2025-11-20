@@ -20,7 +20,7 @@ const getSupabaseClient = () => {
   return supabase
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const supabase = getSupabaseClient()
 
@@ -32,10 +32,19 @@ export async function GET() {
       })
     }
 
-    const { data, error } = await supabase
+    const { searchParams } = new URL(request.url)
+    const userId = searchParams.get('userId')
+
+    let query = supabase
       .from('listings')
       .select('*')
       .order('created_at', { ascending: false })
+
+    if (userId) {
+      query = query.eq('user_id', userId)
+    }
+
+    const { data, error } = await query
 
     if (error) {
       console.error('Error fetching listings:', error)

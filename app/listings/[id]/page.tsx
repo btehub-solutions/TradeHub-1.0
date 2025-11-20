@@ -1,8 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Listing, CATEGORY_ICONS } from '@/lib/supabase'
-import { getListingById } from '@/lib/clientStorage'
+import { Listing } from '@/lib/supabase'
 import Link from 'next/link'
 import { notFound, useParams } from 'next/navigation'
 import { ChevronLeft, ChevronRight, MapPin, MessageCircle, User, Phone, Package } from 'lucide-react'
@@ -12,6 +11,7 @@ export default function ListingDetailPage() {
   const [listing, setListing] = useState<Listing | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const id = params.id as string
@@ -26,10 +26,11 @@ export default function ListingDetailPage() {
 
         const data: Listing = await response.json()
         setListing(data)
+        setError(null)
       } catch (error) {
         console.error('Error fetching listing:', error)
-        const fallback = getListingById(id)
-        setListing(fallback)
+        setListing(null)
+        setError('Unable to load this listing. It may have been removed or you have no network connection.')
       } finally {
         setLoading(false)
       }
@@ -47,6 +48,21 @@ export default function ListingDetailPage() {
   }
 
   if (!listing) {
+    if (error) {
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+          <h1 className="text-2xl font-semibold text-gray-900 mb-4">Listing unavailable</h1>
+          <p className="text-gray-600 mb-6 max-w-md">{error}</p>
+          <Link
+            href="/"
+            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition"
+          >
+            Go back home
+          </Link>
+        </div>
+      )
+    }
+
     notFound()
   }
 

@@ -1,52 +1,71 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Search, MapPin, TrendingUp, Images } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import { Listing, CATEGORIES, CATEGORY_ICONS } from '@/lib/supabase'
-import { getStoredListings } from '@/lib/clientStorage'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { toast } from 'react-hot-toast'
 
 export default function HomePage() {
   const [listings, setListings] = useState<Listing[]>([])
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchListings = async () => {
-      const sortByDate = (items: Listing[]) =>
-        [...items].sort(
-          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        )
+  const sortByDate = useCallback(
+    (items: Listing[]) =>
+      [...items].sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      ),
+    []
+  )
 
+  const fetchListings = useCallback(
+    async (signal?: AbortSignal) => {
       try {
-        const response = await fetch('/api/listings', { cache: 'no-store' })
+        const response = await fetch('/api/listings', {
+          cache: 'no-store',
+          signal
+        })
 
         if (!response.ok) {
           throw new Error('Failed to fetch listings')
         }
 
         const data: Listing[] = await response.json()
-        const warning = response.headers.get('x-tradehub-warning')
-
-        if (warning && data.length === 0) {
-          const fallback = getStoredListings()
-          setListings(sortByDate(fallback))
-        } else {
-          setListings(sortByDate(data))
-        }
-      } catch (error) {
-        console.error('Error fetching listings:', error)
-        const fallback = getStoredListings()
-        setListings(sortByDate(fallback))
+        setListings(sortByDate(data))
+        setError(null)
+      } catch (err: any) {
+        if (signal?.aborted) return
+        console.error('Error fetching listings:', err)
+        setListings([])
+        const message = err?.message || 'Failed to load listings. Please try again.'
+        setError(message)
+        toast.error(message)
       } finally {
         setLoading(false)
       }
-    }
+    },
+    [sortByDate]
+  )
 
+  useEffect(() => {
+    const controller = new AbortController()
+    fetchListings(controller.signal)
+
+    return () => controller.abort()
+  }, [fetchListings])
+
+  const handleRetry = () => {
+    setLoading(true)
+    setError(null)
     fetchListings()
-  }, [])
+  }
+
+  const skeletonItems = useMemo(() => Array.from({ length: 6 }), [])
 
   const filteredListings = listings.filter(listing => {
     const matchesCategory = selectedCategory === 'All' || listing.category === selectedCategory
@@ -61,14 +80,6 @@ export default function HomePage() {
   const getIcon = (iconName: string) => {
     const IconComponent = Icons[iconName as keyof typeof Icons] as any
     return IconComponent || Icons.Package
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50/30">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
-      </div>
-    )
   }
 
   return (
@@ -137,7 +148,20 @@ export default function HomePage() {
         </div>
 
         {/* Listings Grid */}
-        {filteredListings.length === 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {skeletonItems.map((_, index) => (
+              <div key={index} className="bg-white rounded-2xl shadow-soft p-4 space-y-4">
+                <Skeleton className="h-48 w-full rounded-xl" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-1/3" />
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredListings.length === 0 ? (
           <div className="text-center py-20 animate-fade-in">
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-10 h-10 text-gray-400" />
@@ -162,8 +186,19 @@ export default function HomePage() {
                   className="group animate-scale-in"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-large transition-all duration-300 hover:scale-[1.02]">
-                    {/* Image */}
+                  <div className="bg-white rounded-2xl shadow-xl p-8">
+                    {error && (
+                      <div className="mb-6 p-4 rounded-xl border border-red-200 bg-red-50 flex flex-col gap-3 text-sm text-red-700">
+                        <span>{error}</span>
+                        <button
+                          onClick={handleRetry}
+                          disabled={loading}
+                          className="self-start px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 disabled:opacity-50"
+                        >
+                          {loading ? 'Retrying...' : 'Try Again'}
+                        </button>
+                      </div>
+                    )}
                     <div className="relative h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
                       {listing.image_url ? (
                         <img

@@ -1,13 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { signIn } from '@/lib/supabase'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { useAuth } from '@/lib/AuthProvider'
 
 export default function SignInPage() {
   const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -15,10 +17,18 @@ export default function SignInPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace('/dashboard')
+    }
+  }, [authLoading, user, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setSuccessMessage('')
     setLoading(true)
 
     try {
@@ -26,18 +36,18 @@ export default function SignInPage() {
 
       if (error) {
         setError(error.message)
-        setLoading(false)
-      } else if (data.session) {
-        // Successfully signed in, wait a moment for auth state to update
-        setTimeout(() => {
-          window.location.href = '/dashboard'
-        }, 500)
       } else {
-        setError('Failed to sign in. Please try again.')
-        setLoading(false)
+        if (!data.session) {
+          setError('Failed to sign in. Please try again.')
+        } else {
+          setSuccessMessage('Signed in successfully. Redirecting...')
+          router.replace('/dashboard')
+          router.refresh()
+        }
       }
     } catch (err: any) {
       setError(err.message || 'Failed to sign in')
+    } finally {
       setLoading(false)
     }
   }
@@ -54,6 +64,11 @@ export default function SignInPage() {
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
               {error}
+            </div>
+          )}
+          {successMessage && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 text-sm">
+              {successMessage}
             </div>
           )}
 
@@ -88,6 +103,7 @@ export default function SignInPage() {
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                   placeholder="Your password"
+                  aria-label="Password"
                 />
                 <button
                   type="button"
