@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { signUp } from '@/lib/supabase'
+import { signIn } from '@/lib/supabase'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 
 export default function SignUpPage() {
@@ -34,29 +34,36 @@ export default function SignUpPage() {
     setLoading(true)
 
     try {
-      const { data, error } = await signUp(formData.email, formData.password)
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
+      })
 
-      if (error) {
-        setError(error.message)
-        setLoading(false)
-      } else if (data.session) {
-        // User is automatically signed in (email confirmation disabled)
-        alert('Account created successfully!')
-        setTimeout(() => {
-          window.location.href = '/dashboard'
-        }, 500)
-      } else if (data.user) {
-        // Email confirmation required
-        alert('Account created! Please check your email to verify your account.')
-        setTimeout(() => {
-          window.location.href = '/auth/signin'
-        }, 500)
-      } else {
-        setError('Failed to create account. Please try again.')
-        setLoading(false)
+      const result = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        throw new Error(result?.error || 'Failed to create account. Please try again.')
       }
+
+      const { error: signInError } = await signIn(formData.email, formData.password)
+
+      if (signInError) {
+        throw new Error(signInError.message)
+      }
+
+      alert('Account created successfully!')
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 500)
     } catch (err: any) {
-      setError(err.message || 'Failed to create account')
+      setError(err?.message || 'Failed to create account')
+    } finally {
       setLoading(false)
     }
   }
