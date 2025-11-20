@@ -15,9 +15,27 @@ export default function ListingDetailPage() {
 
   useEffect(() => {
     const id = params.id as string
-    const data = getListingById(id)
-    setListing(data)
-    setLoading(false)
+
+    const fetchListing = async () => {
+      try {
+        const response = await fetch(`/api/listings/${id}`, { cache: 'no-store' })
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch listing')
+        }
+
+        const data: Listing = await response.json()
+        setListing(data)
+      } catch (error) {
+        console.error('Error fetching listing:', error)
+        const fallback = getListingById(id)
+        setListing(fallback)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchListing()
   }, [params.id])
 
   if (loading) {

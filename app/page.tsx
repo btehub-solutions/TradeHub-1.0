@@ -14,23 +14,39 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const fetchListings = async () => {
+      const sortByDate = (items: Listing[]) =>
+        [...items].sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
+
+      try {
+        const response = await fetch('/api/listings', { cache: 'no-store' })
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch listings')
+        }
+
+        const data: Listing[] = await response.json()
+        const warning = response.headers.get('x-tradehub-warning')
+
+        if (warning && data.length === 0) {
+          const fallback = getStoredListings()
+          setListings(sortByDate(fallback))
+        } else {
+          setListings(sortByDate(data))
+        }
+      } catch (error) {
+        console.error('Error fetching listings:', error)
+        const fallback = getStoredListings()
+        setListings(sortByDate(fallback))
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchListings()
   }, [])
-
-  const fetchListings = () => {
-    try {
-      const data = getStoredListings()
-      // Sort by newest first
-      const sorted = [...data].sort((a, b) => 
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      )
-      setListings(sorted)
-    } catch (error) {
-      console.error('Error fetching listings:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const filteredListings = listings.filter(listing => {
     const matchesCategory = selectedCategory === 'All' || listing.category === selectedCategory
