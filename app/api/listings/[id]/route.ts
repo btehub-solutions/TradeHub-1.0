@@ -20,14 +20,14 @@ const getSupabaseClient = () => {
   return supabase
 }
 
-type Params = { params: { id: string } }
+type Params = { params: Promise<{ id: string }> }
 
 export async function GET(
   request: Request,
   { params }: Params
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const supabase = getSupabaseClient()
 
     if (!supabase) {
@@ -70,7 +70,7 @@ export async function PATCH(
   { params }: Params
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const supabase = getSupabaseClient()
 
     if (!supabase) {
@@ -122,7 +122,7 @@ export async function DELETE(
   { params }: Params
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const supabase = getSupabaseClient()
 
     if (!supabase) {

@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { signIn } from '@/lib/supabase'
+import { signUp, signIn } from '@/lib/supabase'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { toast } from 'react-hot-toast'
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -34,33 +35,19 @@ export default function SignUpPage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
-      })
+      const { data, error } = await signUp(formData.email, formData.password)
 
-      const result = await response.json().catch(() => ({}))
-
-      if (!response.ok) {
-        throw new Error(result?.error || 'Failed to create account. Please try again.')
+      if (error) {
+        throw error
       }
 
-      const { error: signInError } = await signIn(formData.email, formData.password)
-
-      if (signInError) {
-        throw new Error(signInError.message)
-      }
-
-      alert('Account created successfully!')
-      setTimeout(() => {
+      if (data.user && !data.session) {
+        toast.success('Account created! Please check your email to confirm.')
+        router.push('/auth/signin')
+      } else if (data.session) {
+        toast.success('Account created successfully!')
         router.push('/dashboard')
-      }, 500)
+      }
     } catch (err: any) {
       setError(err?.message || 'Failed to create account')
     } finally {

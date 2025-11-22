@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Upload, Loader2, X } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import Link from 'next/link'
-import { CATEGORIES, CATEGORY_ICONS } from '@/lib/supabase'
+import { CATEGORIES, supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/AuthProvider'
 import { toast } from 'react-hot-toast'
 
@@ -13,7 +13,9 @@ export default function NewListingPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
   const [loading, setLoading] = useState(false)
-  const [images, setImages] = useState<string[]>([])
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [previews, setPreviews] = useState<string[]>([])
+  
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -44,7 +46,34 @@ export default function NewListingPage() {
 
   const resetForm = () => {
     setFormData(initialFormState)
-    setImages([])
+    setImageFiles([])
+    setPreviews([])
+  }
+
+  const uploadImages = async () => {
+    const urls: string[] = []
+    
+    for (const file of imageFiles) {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`
+      const filePath = `${user?.id}/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('listings')
+        .upload(filePath, file)
+
+      if (uploadError) {
+        throw new Error(`Error uploading image: ${uploadError.message}`)
+      }
+
+      const { data } = supabase.storage
+        .from('listings')
+        .getPublicUrl(filePath)
+
+      urls.push(data.publicUrl)
+    }
+
+    return urls
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,7 +88,15 @@ export default function NewListingPage() {
     setLoading(true)
 
     try {
-      const toastId = toast.loading('Posting your item...')
+      const toastId = toast.loading('Uploading images...')
+      
+      let imageUrls: string[] = []
+      if (imageFiles.length > 0) {
+        imageUrls = await uploadImages()
+      }
+
+      toast.loading('Posting your item...', { id: toastId })
+
       const response = await fetch('/api/listings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -67,8 +104,8 @@ export default function NewListingPage() {
           ...formData,
           price: parseFloat(formData.price),
           user_id: user.id,
-          image_url: images.length > 0 ? images[0] : null,
-          images: images.length > 0 ? images : null
+          image_url: imageUrls.length > 0 ? imageUrls[0] : null,
+          images: imageUrls.length > 0 ? imageUrls : null
         })
       })
 
@@ -97,28 +134,34 @@ export default function NewListingPage() {
     const MAX_IMAGES = 5
     const MAX_SIZE_MB = 5 * 1024 * 1024
 
-    if (images.length + files.length > MAX_IMAGES) {
+    if (imageFiles.length + files.length > MAX_IMAGES) {
       toast.error(`Maximum ${MAX_IMAGES} images allowed`)
       return
     }
+
+    const newFiles: File[] = []
+    const newPreviews: string[] = []
 
     Array.from(files).forEach(file => {
       if (file.size > MAX_SIZE_MB) {
         toast.error(`${file.name} is too large. Maximum 5MB per image.`)
         return
       }
-
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const base64String = reader.result as string
-        setImages(prev => [...prev, base64String])
-      }
-      reader.readAsDataURL(file)
+      newFiles.push(file)
+      newPreviews.push(URL.createObjectURL(file))
     })
+
+    setImageFiles(prev => [...prev, ...newFiles])
+    setPreviews(prev => [...prev, ...newPreviews])
   }
 
   const removeImage = (index: number) => {
-    setImages(prev => prev.filter((_, i) => i !== index))
+    setImageFiles(prev => prev.filter((_, i) => i !== index))
+    setPreviews(prev => {
+      // Revoke the URL to avoid memory leaks
+      URL.revokeObjectURL(prev[index])
+      return prev.filter((_, i) => i !== index)
+    })
     toast.success('Image removed')
   }
 
@@ -282,9 +325,9 @@ export default function NewListingPage() {
               </label>
               
               {/* Image Previews */}
-              {images.length > 0 && (
+              {previews.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
-                  {images.map((img, index) => (
+                  {previews.map((img, index) => (
                     <div key={index} className="relative group">
                       <img 
                         src={img} 
@@ -309,20 +352,20 @@ export default function NewListingPage() {
               )}
 
               {/* File Upload */}
-              <label className={`cursor-pointer ${images.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              <label className={`cursor-pointer ${previews.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <input
                   type="file"
                   accept="image/*"
                   multiple
                   onChange={handleImageChange}
                   className="hidden"
-                  disabled={images.length >= 5}
+                  disabled={previews.length >= 5}
                 />
                 <div className="flex flex-col items-center justify-center p-12 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 hover:border-blue-400 transition-all">
                   <Upload className="w-12 h-12 text-gray-400 mb-3" />
                   <span className="text-base font-semibold text-gray-700">Upload Photos</span>
                   <span className="text-sm text-gray-500 mt-1">
-                    {images.length > 0 ? `${images.length}/5 images` : 'Click to select from your files'}
+                    {previews.length > 0 ? `${previews.length}/5 images` : 'Click to select from your files'}
                   </span>
                 </div>
               </label>
