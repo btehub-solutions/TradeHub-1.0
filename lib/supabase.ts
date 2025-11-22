@@ -8,7 +8,10 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
-    storage: typeof window !== 'undefined' ? window.localStorage : undefined
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+    storageKey: 'tradehub-auth-token',
+    flowType: 'pkce',
+    debug: false
   },
   db: {
     schema: 'public'
@@ -16,6 +19,16 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   global: {
     headers: {
       'x-client-info': 'tradehub-app'
+    },
+    fetch: (url, options = {}) => {
+      return fetch(url, {
+        ...options,
+        // Add timeout to prevent hanging requests
+        signal: AbortSignal.timeout(10000)
+      }).catch(error => {
+        console.error('Supabase fetch error:', error)
+        throw error
+      })
     }
   }
 })

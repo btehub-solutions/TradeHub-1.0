@@ -13,7 +13,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
-  signOut: async () => {}
+  signOut: async () => { }
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -21,33 +21,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
+
     // Get initial session
     const initAuth = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
         if (error) {
           console.error('Error getting session:', error)
+          // Don't throw, just log and continue
         }
-        setUser(session?.user ?? null)
-        setLoading(false)
+        if (isMounted) {
+          setUser(session?.user ?? null)
+          setLoading(false)
+        }
       } catch (error) {
         console.error('Failed to initialize auth:', error)
-        setLoading(false)
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
 
     initAuth()
 
-    // Listen for auth changes
+    // Listen for auth changes with error handling
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email)
-        setUser(session?.user ?? null)
-        setLoading(false)
+        // Only log important events, not token refreshes
+        if (event !== 'TOKEN_REFRESHED') {
+          console.log('Auth state changed:', event, session?.user?.email)
+        }
+
+        if (isMounted) {
+          setUser(session?.user ?? null)
+          setLoading(false)
+        }
       }
     )
 
-    return () => subscription.unsubscribe()
+    return () => {
+      isMounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   const handleSignOut = async () => {

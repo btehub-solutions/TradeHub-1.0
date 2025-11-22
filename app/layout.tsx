@@ -13,6 +13,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'TradeHub - Buy & Sell in Nigeria',
   description: 'Your local marketplace for pre-loved items',
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({
