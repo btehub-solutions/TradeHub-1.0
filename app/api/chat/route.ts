@@ -1,114 +1,88 @@
 import { NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
+// Simple rule-based chatbot responses
+const RESPONSES: Record<string, string> = {
+    // Greetings
+    'hello': 'Hello! Welcome to TradeHub. How can I help you today?',
+    'hi': 'Hi there! I\'m here to help you with TradeHub. What would you like to know?',
+    'hey': 'Hey! How can I assist you with TradeHub today?',
 
-const TRADEHUB_CONTEXT = `You are a helpful assistant for TradeHub, a local marketplace platform in Nigeria where people can buy and sell pre-loved items.
+    // Selling
+    'sell': 'To sell an item on TradeHub:\n1. Sign in to your account\n2. Click "Post Item" button\n3. Fill in item details (title, description, price, location)\n4. Upload photos\n5. Click "Post Item" to publish\n\nIt\'s completely free!',
+    'post': 'To post a listing:\n1. Sign in to your account\n2. Click the "Post Item" button in the header\n3. Fill in all required fields\n4. Add photos of your item\n5. Submit your listing\n\nYour listing will appear immediately!',
+    'listing': 'You can create a listing by clicking the "Post Item" button after signing in. Fill in the details about your item, add photos, and publish. It\'s free and takes just a few minutes!',
 
-Key Information about TradeHub:
+    // Buying
+    'buy': 'To buy an item:\n1. Browse listings on the home page\n2. Use search or filter by category\n3. Click on an item to view details\n4. Contact the seller using their phone number\n5. Arrange payment and pickup directly\n\nTradeHub connects you with sellers - you handle the transaction directly!',
+    'contact': 'To contact a seller, click on any listing to view the full details. You\'ll find the seller\'s phone number there. You can call or WhatsApp them directly to arrange the purchase.',
 
-PLATFORM OVERVIEW:
-- TradeHub is a free marketplace connecting buyers and sellers in Nigeria
-- Users can post unlimited listings at no cost
-- No commission or hidden fees
+    // Account
+    'account': 'To create an account:\n1. Click "Sign Up" in the header\n2. Enter your email and password\n3. You\'ll be signed in immediately\n\nTo manage your account, click "Dashboard" after signing in.',
+    'signup': 'Click the "Sign Up" button in the top right corner, enter your email and password, and you\'re all set! No email confirmation needed.',
+    'signin': 'Click "Sign In" in the header and enter your email and password. If you don\'t have an account yet, click "Sign Up" instead.',
+    'dashboard': 'Your dashboard shows all your listings. You can edit or delete them from there. Access it by clicking "Dashboard" in the header after signing in.',
 
-CATEGORIES:
-1. Electronics (phones, laptops, gadgets)
-2. Vehicles (cars, motorcycles)
-3. Real Estate (houses, apartments, land)
-4. Furniture (home and office furniture)
-5. Fashion (clothing, shoes, accessories)
-6. Other (everything else)
+    // Categories
+    'category': 'TradeHub has these categories:\n• Electronics (phones, laptops, gadgets)\n• Vehicles (cars, motorcycles)\n• Real Estate (houses, apartments)\n• Furniture (home & office)\n• Fashion (clothing, shoes)\n• Other (everything else)',
+    'categories': 'We have 6 main categories: Electronics, Vehicles, Real Estate, Furniture, Fashion, and Other. You can filter by category on the home page.',
 
-SELLING PROCESS:
-1. Sign in to your account
-2. Go to Dashboard
-3. Click "Add New Listing"
-4. Fill in details (title, description, price, location, category)
-5. Upload photos
-6. Click "Post Listing"
+    // Pricing
+    'price': 'TradeHub is completely FREE! No listing fees, no commissions, no hidden charges. Post as many items as you want at no cost.',
+    'free': 'Yes! TradeHub is 100% free to use. You can post unlimited listings without any fees or commissions.',
+    'cost': 'There are no costs to use TradeHub. It\'s completely free for both buyers and sellers.',
 
-BUYING PROCESS:
-1. Browse listings on home page
-2. Use search bar to find items
-3. Filter by category
-4. Click item to view details
-5. Contact seller using provided phone number
+    // Payment
+    'payment': 'TradeHub doesn\'t handle payments. Buyers and sellers arrange payment directly. We recommend:\n• Meet in public places\n• Inspect items before paying\n• Use secure payment methods\n• Trust your instincts',
+    'pay': 'Payments are arranged directly between buyer and seller. TradeHub is just the platform to connect you. Always meet safely and inspect items before paying!',
 
-ACCOUNT MANAGEMENT:
-- Sign up: Click "Sign In" → "Sign Up" → Enter email/password
-- Sign in: Click "Sign In" → Enter credentials
-- Dashboard: Access after signing in to manage listings
-- Edit listings: Dashboard → Find listing → Click "Edit"
-- Delete listings: Dashboard → Find listing → Click "Delete"
+    // Safety
+    'safe': 'Safety tips:\n• Meet in public, well-lit places\n• Bring a friend if possible\n• Inspect items thoroughly before paying\n• Trust your instincts\n• Report suspicious activity to support@tradehub.com',
+    'safety': 'For safe transactions:\n1. Meet in public places\n2. Inspect items before paying\n3. Use secure payment methods\n4. Never share sensitive personal info\n5. Report suspicious users',
 
-PAYMENTS & SAFETY:
-- TradeHub doesn't handle payments - arranged directly between buyer/seller
-- Safety tips: Meet in public places, inspect items before paying, trust your instincts
-- Report suspicious activity to support@tradehub.com
+    // Help
+    'help': 'I can help you with:\n• How to sell/post items\n• How to buy items\n• Account management\n• Categories\n• Safety tips\n• Pricing information\n\nWhat would you like to know?',
+    'support': 'For additional support, email us at support@tradehub.com. I\'m here to answer common questions about using TradeHub!',
 
-FEATURES:
-- Search functionality
-- Category filtering
-- Photo uploads for listings
-- Location-based listings
-- Mobile responsive design
+    // Default
+    'default': 'I\'m here to help! You can ask me about:\n• Posting/selling items\n• Buying items\n• Account setup\n• Categories\n• Safety tips\n• Pricing\n\nWhat would you like to know?'
+}
 
-CONTACT:
-- Email: support@tradehub.com
-- Phone: +234-XXX-XXXX-XXX
+function getResponse(userMessage: string): string {
+    const message = userMessage.toLowerCase().trim()
 
-Always be helpful, friendly, and provide accurate information about TradeHub. If users ask about features not mentioned here, politely let them know and suggest contacting support.`
+    // Check for exact or partial matches
+    for (const [key, response] of Object.entries(RESPONSES)) {
+        if (key === 'default') continue
+        if (message.includes(key)) {
+            return response
+        }
+    }
+
+    // Return default response if no match
+    return RESPONSES.default
+}
 
 export async function POST(request: Request) {
     try {
         const { messages } = await request.json()
 
-        if (!process.env.GEMINI_API_KEY) {
+        if (!messages || messages.length === 0) {
             return NextResponse.json(
-                { error: 'Gemini API key not configured' },
-                { status: 500 }
+                { error: 'No messages provided' },
+                { status: 400 }
             )
         }
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+        const lastMessage = messages[messages.length - 1]
+        const userText = lastMessage.text
 
-        // Format conversation history for Gemini
-        const chatHistory = messages.slice(0, -1).map((msg: any) => ({
-            role: msg.sender === 'user' ? 'user' : 'model',
-            parts: [{ text: msg.text }]
-        }))
+        const botResponse = getResponse(userText)
 
-        const lastMessage = messages[messages.length - 1].text
-
-        // Start chat with context
-        const chat = model.startChat({
-            history: [
-                {
-                    role: 'user',
-                    parts: [{ text: 'You are a TradeHub support assistant. Here is the context about TradeHub:\n\n' + TRADEHUB_CONTEXT }]
-                },
-                {
-                    role: 'model',
-                    parts: [{ text: 'I understand. I\'m now ready to help users with TradeHub questions. I\'ll provide accurate, helpful information based on the context you\'ve provided.' }]
-                },
-                ...chatHistory
-            ],
-            generationConfig: {
-                maxOutputTokens: 500,
-                temperature: 0.7,
-            },
-        })
-
-        const result = await chat.sendMessage(lastMessage)
-        const response = result.response
-        const text = response.text()
-
-        return NextResponse.json({ message: text })
+        return NextResponse.json({ message: botResponse })
     } catch (error: any) {
         console.error('Chat API error:', error)
         return NextResponse.json(
-            { error: error.message || 'Failed to get response' },
+            { error: 'Failed to process message' },
             { status: 500 }
         )
     }

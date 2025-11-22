@@ -197,7 +197,7 @@ export default function NewListingPage() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-3xl shadow-large p-8 animate-slide-up">
+        <div className="bg-white rounded-3xl shadow-large p-4 sm:p-6 md:p-8 animate-slide-up">
           <form onSubmit={handleSubmit} className="space-y-6">
 
             {/* Title */}

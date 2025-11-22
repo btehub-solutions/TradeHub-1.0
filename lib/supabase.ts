@@ -73,7 +73,13 @@ export const getCurrentUser = async () => {
 }
 
 export const signUp = async (email: string, password: string) => {
-  return await supabase.auth.signUp({ email, password })
+  return await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined
+    }
+  })
 }
 
 export const signIn = async (email: string, password: string) => {

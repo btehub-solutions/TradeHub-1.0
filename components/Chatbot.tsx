@@ -15,7 +15,7 @@ export default function Chatbot() {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
-            text: 'Hi! I\'m your TradeHub AI assistant. How can I help you today?',
+            text: 'Hi! Welcome to TradeHub Support. I can help you with:\n• Posting items for sale\n• Buying items\n• Account questions\n• Safety tips\n\nWhat would you like to know?',
             sender: 'bot',
             timestamp: new Date()
         }
@@ -42,7 +42,6 @@ export default function Chatbot() {
         }
 
         setMessages(prev => [...prev, userMessage])
-        const currentInput = inputText
         setInputText('')
 
         // Add typing indicator
@@ -55,7 +54,6 @@ export default function Chatbot() {
         setMessages(prev => [...prev, typingMessage])
 
         try {
-            // Call AI API
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
@@ -94,7 +92,7 @@ export default function Chatbot() {
                     ...withoutTyping,
                     {
                         id: (Date.now() + 1).toString(),
-                        text: 'Sorry, I\'m having trouble connecting. Please try again or contact support@tradehub.com',
+                        text: 'Sorry, I\'m having trouble. Please try asking again!',
                         sender: 'bot',
                         timestamp: new Date()
                     }
@@ -126,8 +124,8 @@ export default function Chatbot() {
                 <div className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-200">
                     {/* Header */}
                     <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-t-2xl">
-                        <h3 className="font-bold text-lg">TradeHub AI Assistant</h3>
-                        <p className="text-sm text-blue-100">Powered by Google Gemini</p>
+                        <h3 className="font-bold text-lg">TradeHub Support</h3>
+                        <p className="text-sm text-blue-100">Ask me anything about TradeHub</p>
                     </div>
 
                     {/* Messages */}
@@ -139,10 +137,10 @@ export default function Chatbot() {
                             >
                                 <div
                                     className={`max-w-[80%] px-4 py-2 rounded-2xl ${message.sender === 'user'
-                                            ? 'bg-blue-600 text-white rounded-br-none'
-                                            : message.id === 'typing'
-                                                ? 'bg-gray-200 text-gray-600 rounded-bl-none italic'
-                                                : 'bg-gray-100 text-gray-900 rounded-bl-none'
+                                        ? 'bg-blue-600 text-white rounded-br-none'
+                                        : message.id === 'typing'
+                                            ? 'bg-gray-200 text-gray-600 rounded-bl-none italic'
+                                            : 'bg-gray-100 text-gray-900 rounded-bl-none'
                                         }`}
                                 >
                                     <p className="text-sm whitespace-pre-line">{message.text}</p>

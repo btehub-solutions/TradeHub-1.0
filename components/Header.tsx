@@ -1,13 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus, ShoppingBag, LayoutDashboard, LogOut } from 'lucide-react'
+import { Plus, ShoppingBag, LayoutDashboard, LogOut, Menu, X } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/lib/AuthProvider'
 import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { user, loading, signOut } = useAuth()
   const router = useRouter()
 
@@ -15,38 +16,40 @@ export default function Header() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
     }
-    
+
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const handleSignOut = async () => {
     await signOut()
+    setMobileMenuOpen(false)
     router.push('/')
   }
 
+  const closeMobileMenu = () => setMobileMenuOpen(false)
+
   return (
-    <header 
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/80 backdrop-blur-lg shadow-soft' 
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
+          ? 'bg-white/80 backdrop-blur-lg shadow-soft'
           : 'bg-white'
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
-              <ShoppingBag className="w-6 h-6 text-white" strokeWidth={2.5} />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+              <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6 text-white" strokeWidth={2.5} />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+            <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
               TradeHub
             </span>
           </Link>
 
-          {/* Actions */}
-          <div className="flex items-center space-x-4">
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-4">
             {loading ? (
               <div className="text-gray-500 text-sm">Loading...</div>
             ) : user ? (
@@ -64,7 +67,7 @@ export default function Header() {
                   </button>
                 </Link>
                 <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
-                  <span className="text-sm text-gray-600 hidden sm:inline">{user.email}</span>
+                  <span className="text-sm text-gray-600 hidden lg:inline">{user.email}</span>
                   <button
                     onClick={handleSignOut}
                     className="flex items-center space-x-1 text-sm text-red-600 hover:text-red-700 font-medium transition-colors"
@@ -89,8 +92,65 @@ export default function Header() {
               </>
             )}
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-gray-700 hover:text-blue-600 transition-colors"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
+          <div className="px-4 py-4 space-y-3">
+            {loading ? (
+              <div className="text-gray-500 text-sm text-center">Loading...</div>
+            ) : user ? (
+              <>
+                <div className="pb-3 border-b border-gray-200">
+                  <p className="text-sm text-gray-600 truncate">{user.email}</p>
+                </div>
+                <Link href="/dashboard" onClick={closeMobileMenu}>
+                  <button className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg font-medium transition-colors">
+                    <LayoutDashboard className="w-5 h-5" />
+                    <span>Dashboard</span>
+                  </button>
+                </Link>
+                <Link href="/listings/new" onClick={closeMobileMenu}>
+                  <button className="w-full flex items-center justify-center space-x-2 px-4 py-3 font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:shadow-lg transition-all">
+                    <Plus className="w-5 h-5" />
+                    <span>Post Item</span>
+                  </button>
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="w-full flex items-center space-x-2 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg font-medium transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/signin" onClick={closeMobileMenu}>
+                  <button className="w-full px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg font-medium transition-colors">
+                    Sign In
+                  </button>
+                </Link>
+                <Link href="/auth/signup" onClick={closeMobileMenu}>
+                  <button className="w-full px-4 py-3 font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:shadow-lg transition-all">
+                    Sign Up
+                  </button>
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   )
 }

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { signUp, signIn } from '@/lib/supabase'
+import { signUp } from '@/lib/supabase'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 
@@ -41,12 +41,11 @@ export default function SignUpPage() {
         throw error
       }
 
-      if (data.user && !data.session) {
-        toast.success('Account created! Please check your email to confirm.')
-        router.push('/auth/signin')
-      } else if (data.session) {
+      // User is signed in directly after signup
+      if (data.user) {
         toast.success('Account created successfully!')
         router.push('/dashboard')
+        router.refresh()
       }
     } catch (err: any) {
       setError(err?.message || 'Failed to create account')
@@ -63,7 +62,7 @@ export default function SignUpPage() {
           <p className="text-gray-600">Join TradeHub and start trading today</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
               {error}
