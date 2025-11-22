@@ -160,8 +160,8 @@ export default function DashboardPage() {
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 md:gap-0">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">
             Manage your {listings.length} listing{listings.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -174,9 +174,9 @@ export default function DashboardPage() {
       </div>
 
       {listings.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-2xl shadow-soft">
-          <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500 text-lg mb-4">You haven&apos;t posted any items yet</p>
+        <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl shadow-soft">
+          <Package className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+          <p className="text-gray-500 dark:text-gray-400 text-lg mb-4">You haven&apos;t posted any items yet</p>
           <Link href="/listings/new">
             <button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all">
               Post Your First Item
@@ -188,7 +188,7 @@ export default function DashboardPage() {
           {listings.map((listing) => (
             <div
               key={listing.id}
-              className={`bg-white rounded-2xl shadow-soft p-6 transition-all ${listing.status === 'sold' ? 'opacity-75' : ''
+              className={`bg-white dark:bg-gray-800 rounded-2xl shadow-soft p-6 transition-all ${listing.status === 'sold' ? 'opacity-75' : ''
                 }`}
             >
               {editingId === listing.id ? (
@@ -198,13 +198,13 @@ export default function DashboardPage() {
                     type="text"
                     value={editForm.title}
                     onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                     placeholder="Title"
                   />
                   <textarea
                     value={editForm.description}
                     onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                     rows={3}
                     placeholder="Description"
                   />
@@ -213,14 +213,14 @@ export default function DashboardPage() {
                       type="number"
                       value={editForm.price}
                       onChange={(e) => setEditForm({ ...editForm, price: parseFloat(e.target.value) })}
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                       placeholder="Price"
                     />
                     <input
                       type="text"
                       value={editForm.location}
                       onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                       placeholder="Location"
                     />
                   </div>
@@ -233,7 +233,7 @@ export default function DashboardPage() {
                     </button>
                     <button
                       onClick={() => setEditingId(null)}
-                      className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+                      className="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-6 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors"
                     >
                       Cancel
                     </button>
@@ -249,8 +249,8 @@ export default function DashboardPage() {
                       className="w-full h-48 md:w-32 md:h-32 object-cover rounded-xl flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-full h-48 md:w-32 md:h-32 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Package className="w-12 h-12 text-gray-300" />
+                    <div className="w-full h-48 md:w-32 md:h-32 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Package className="w-12 h-12 text-gray-300 dark:text-gray-500" />
                     </div>
                   )}
 
@@ -269,14 +269,14 @@ export default function DashboardPage() {
                             </span>
                           )}
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">{listing.title}</h3>
-                        <p className="text-gray-600 text-sm line-clamp-2">{listing.description}</p>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{listing.title}</h3>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{listing.description}</p>
                       </div>
                       <div className="text-left md:text-right md:ml-4">
                         <p className="text-2xl font-bold text-blue-600">
                           ₦{listing.price.toLocaleString()}
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                           📍 {listing.location}
                         </p>
                       </div>

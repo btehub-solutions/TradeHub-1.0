@@ -88,22 +88,22 @@ export default function HomePage() {
 
         {/* Hero Section */}
         <div className="mb-12 animate-fade-in">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 dark:from-white dark:via-gray-100 dark:to-gray-200 bg-clip-text text-transparent">
             Discover Amazing Deals
           </h1>
-          <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8">
             Buy and sell anything in your local community
           </p>
 
           {/* Modern Search Bar */}
           <div className="relative max-w-2xl">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
             <input
               type="text"
               placeholder="Search for anything..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-white border-0 rounded-2xl shadow-soft focus:shadow-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-lg"
+              className="w-full pl-12 pr-4 py-4 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700 border-0 rounded-2xl shadow-soft focus:shadow-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-lg placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
           </div>
         </div>
@@ -111,8 +111,8 @@ export default function HomePage() {
         {/* Category Pills */}
         <div className="mb-8 animate-slide-up">
           <div className="flex items-center space-x-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-gray-600" />
-            <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+            <TrendingUp className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
               Categories
             </h2>
           </div>
@@ -126,8 +126,8 @@ export default function HomePage() {
                   key={category}
                   onClick={() => setSelectedCategory(category)}
                   className={`group relative inline-flex items-center px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl font-medium transition-all duration-200 whitespace-nowrap ${isSelected
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30 scale-105'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 shadow-soft hover:shadow-medium hover:scale-105'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30 scale-105'
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-soft hover:shadow-medium hover:scale-105'
                     }`}
                 >
                   <IconComponent className={`w-4 h-4 mr-2 ${isSelected ? 'text-white' : 'text-gray-500'}`} />
@@ -140,9 +140,9 @@ export default function HomePage() {
 
         {/* Results Info */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-600 font-medium">
+          <p className="text-gray-600 dark:text-gray-300 font-medium">
             {filteredListings.length} {filteredListings.length === 1 ? 'item' : 'items'} found
-            {selectedCategory !== 'All' && <span className="text-blue-600"> in {selectedCategory}</span>}
+            {selectedCategory !== 'All' && <span className="text-blue-600 dark:text-blue-400"> in {selectedCategory}</span>}
           </p>
         </div>
 
@@ -165,8 +165,8 @@ export default function HomePage() {
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-10 h-10 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No items found</h3>
-            <p className="text-gray-600 mb-6">Try adjusting your search or category filter</p>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No items found</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">Try adjusting your search or category filter</p>
             <Link href="/listings/new">
               <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all">
                 Post the first item
@@ -185,7 +185,7 @@ export default function HomePage() {
                   className="group animate-scale-in"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <div className="bg-white rounded-2xl shadow-soft hover:shadow-medium transition-shadow">
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-soft hover:shadow-medium transition-shadow">
                     {error && (
                       <div className="mb-6 p-4 rounded-xl border border-red-200 bg-red-50 flex flex-col gap-3 text-sm text-red-700">
                         <span>{error}</span>
@@ -232,7 +232,7 @@ export default function HomePage() {
 
                     {/* Content */}
                     <div className="p-4 sm:p-5">
-                      <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                      <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {listing.title}
                       </h3>
 
@@ -242,8 +242,8 @@ export default function HomePage() {
                         </span>
                       </div>
 
-                      <div className="flex items-center text-xs sm:text-sm text-gray-600">
-                        <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 text-gray-400" />
+                      <div className="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                        <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 text-gray-400 dark:text-gray-500" />
                         <span className="line-clamp-1">{listing.location}</span>
                       </div>
                     </div>
