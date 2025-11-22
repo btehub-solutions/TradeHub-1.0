@@ -75,34 +75,7 @@ export default function DashboardPage() {
     }
   }
 
-  const handleMarkAsSold = async (id: string) => {
-    if (!user) return
 
-    try {
-      const response = await fetch(`/api/listings/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          data: { status: 'sold' }
-        })
-      })
-
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}))
-        throw new Error(body?.error || 'Failed to update listing')
-      }
-
-      const updated = await response.json()
-      setListings(listings.map(l => (l.id === id ? updated : l)))
-      toast.success('Listing marked as sold')
-    } catch (error) {
-      console.error('Error updating listing:', error)
-      toast.error(error instanceof Error ? error.message : 'Failed to update listing')
-    }
-  }
 
   const startEdit = (listing: Listing) => {
     setEditingId(listing.id)
@@ -215,9 +188,8 @@ export default function DashboardPage() {
           {listings.map((listing) => (
             <div
               key={listing.id}
-              className={`bg-white rounded-2xl shadow-soft p-6 transition-all ${
-                listing.status === 'sold' ? 'opacity-75' : ''
-              }`}
+              className={`bg-white rounded-2xl shadow-soft p-6 transition-all ${listing.status === 'sold' ? 'opacity-75' : ''
+                }`}
             >
               {editingId === listing.id ? (
                 // Edit Mode
@@ -311,10 +283,10 @@ export default function DashboardPage() {
                     </div>
 
                     <p className="text-xs text-gray-400 mb-4">
-                      Posted {new Date(listing.created_at).toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
+                      Posted {new Date(listing.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
                       })}
                     </p>
 
@@ -325,7 +297,7 @@ export default function DashboardPage() {
                           View
                         </button>
                       </Link>
-                      
+
                       {listing.status === 'available' && (
                         <>
                           <button
@@ -335,13 +307,7 @@ export default function DashboardPage() {
                             <Edit2 className="w-4 h-4" />
                             Edit
                           </button>
-                          <button
-                            onClick={() => handleMarkAsSold(listing.id)}
-                            className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium text-sm transition-colors"
-                          >
-                            <CheckCircle className="w-4 h-4" />
-                            Mark as Sold
-                          </button>
+
                           <button
                             onClick={() => handleDelete(listing.id)}
                             className="flex items-center gap-2 text-red-600 hover:text-red-700 font-medium text-sm transition-colors"
