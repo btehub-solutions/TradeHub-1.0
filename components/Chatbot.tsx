@@ -115,7 +115,7 @@ export default function Chatbot() {
                     {/* Header */}
                     <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-t-2xl">
                         <h3 className="font-bold text-lg">TradeHub Support</h3>
-                        <p className="text-sm text-blue-100">We're here to help!</p>
+                        <p className="text-sm text-blue-100">We&apos;re here to help!</p>
                     </div>
 
                     {/* Messages */}
