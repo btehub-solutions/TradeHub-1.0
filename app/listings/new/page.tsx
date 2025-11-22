@@ -15,7 +15,7 @@ export default function NewListingPage() {
   const [loading, setLoading] = useState(false)
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
-  
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -52,7 +52,7 @@ export default function NewListingPage() {
 
   const uploadImages = async () => {
     const urls: string[] = []
-    
+
     for (const file of imageFiles) {
       const fileExt = file.name.split('.').pop()
       const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`
@@ -78,7 +78,7 @@ export default function NewListingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!user) {
       toast.error('Please sign in to post a listing')
       router.replace('/auth/signin')
@@ -89,7 +89,7 @@ export default function NewListingPage() {
 
     try {
       const toastId = toast.loading('Uploading images...')
-      
+
       let imageUrls: string[] = []
       if (imageFiles.length > 0) {
         imageUrls = await uploadImages()
@@ -97,29 +97,29 @@ export default function NewListingPage() {
 
       toast.loading('Posting your item...', { id: toastId })
 
-      const response = await fetch('/api/listings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          price: parseFloat(formData.price),
-          user_id: user.id,
-          image_url: imageUrls.length > 0 ? imageUrls[0] : null,
-          images: imageUrls.length > 0 ? imageUrls : null
-        })
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        toast.success('Item posted successfully!', { id: toastId })
-        resetForm()
-        router.replace('/dashboard')
-      } else {
-        const errorMessage = data.error || 'Error posting item. Please try again.'
-        toast.error(errorMessage, { id: toastId })
-        setLoading(false)
+      const listingData = {
+        ...formData,
+        price: parseFloat(formData.price),
+        user_id: user.id,
+        image_url: imageUrls.length > 0 ? imageUrls[0] : null,
+        images: imageUrls.length > 0 ? imageUrls : null,
+        status: 'available'
       }
+
+      const { data, error } = await supabase
+        .from('listings')
+        .insert(listingData)
+        .select()
+        .single()
+
+      if (error) {
+        throw error
+      }
+
+      toast.success('Item posted successfully!', { id: toastId })
+      resetForm()
+      router.replace('/dashboard')
+
     } catch (error: any) {
       console.error('Error:', error)
       toast.error(error.message || 'Error posting item. Please try again.')
@@ -183,7 +183,7 @@ export default function NewListingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Header */}
         <div className="mb-8 animate-fade-in">
           <Link href="/" className="inline-flex items-center text-gray-600 hover:text-blue-600 mb-4 group">
@@ -199,7 +199,7 @@ export default function NewListingPage() {
         {/* Form Card */}
         <div className="bg-white rounded-3xl shadow-large p-8 animate-slide-up">
           <form onSubmit={handleSubmit} className="space-y-6">
-            
+
             {/* Title */}
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-gray-700">
@@ -323,15 +323,15 @@ export default function NewListingPage() {
               <label className="block text-sm font-semibold text-gray-700">
                 Item Photo
               </label>
-              
+
               {/* Image Previews */}
               {previews.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                   {previews.map((img, index) => (
                     <div key={index} className="relative group">
-                      <img 
-                        src={img} 
-                        alt={`Preview ${index + 1}`} 
+                      <img
+                        src={img}
+                        alt={`Preview ${index + 1}`}
                         className="w-full h-32 object-cover rounded-xl"
                       />
                       <button
@@ -369,7 +369,7 @@ export default function NewListingPage() {
                   </span>
                 </div>
               </label>
-              
+
               <p className="text-xs text-gray-500 flex items-start mt-2">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 mr-2"></span>
                 Add up to 5 photos (optional, max 5MB each). First image will be the main photo.
