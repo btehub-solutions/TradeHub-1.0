@@ -158,7 +158,7 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 md:gap-0">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
           <p className="text-gray-600 mt-2">
@@ -166,7 +166,7 @@ export default function DashboardPage() {
           </p>
         </div>
         <Link href="/listings/new">
-          <button className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all">
+          <button className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all w-full md:w-auto justify-center">
             <Plus className="w-5 h-5" />
             <span>Add New Listing</span>
           </button>
@@ -241,21 +241,21 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 // View Mode
-                <div className="flex gap-6">
+                <div className="flex flex-col md:flex-row gap-6">
                   {listing.image_url ? (
                     <img
                       src={listing.image_url}
                       alt={listing.title}
-                      className="w-32 h-32 object-cover rounded-xl flex-shrink-0"
+                      className="w-full h-48 md:w-32 md:h-32 object-cover rounded-xl flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-32 h-32 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-full h-48 md:w-32 md:h-32 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
                       <Package className="w-12 h-12 text-gray-300" />
                     </div>
                   )}
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex flex-col md:flex-row md:items-start justify-between mb-3 gap-2 md:gap-0">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">
@@ -272,7 +272,7 @@ export default function DashboardPage() {
                         <h3 className="text-xl font-bold text-gray-900 mb-1">{listing.title}</h3>
                         <p className="text-gray-600 text-sm line-clamp-2">{listing.description}</p>
                       </div>
-                      <div className="text-right ml-4">
+                      <div className="text-left md:text-right md:ml-4">
                         <p className="text-2xl font-bold text-blue-600">
                           ₦{listing.price.toLocaleString()}
                         </p>
@@ -290,7 +290,7 @@ export default function DashboardPage() {
                       })}
                     </p>
 
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap gap-3">
                       <Link href={`/listings/${listing.id}`}>
                         <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors">
                           <Eye className="w-4 h-4" />

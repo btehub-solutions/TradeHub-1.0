@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Chatbot from '@/components/Chatbot'
 import { AuthProvider } from '@/lib/AuthProvider'
 import { Toaster } from 'react-hot-toast'
 
@@ -27,6 +28,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <Chatbot />
         </AuthProvider>
         <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
       </body>
