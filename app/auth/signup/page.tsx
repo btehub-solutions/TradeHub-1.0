@@ -62,7 +62,7 @@ export default function SignUpPage() {
           <p className="text-gray-600 dark:text-gray-300">Join TradeHub and start trading today</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8">
+        <div className="bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 rounded-2xl shadow-xl backdrop-blur-sm p-6 sm:p-8">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
               {error}
@@ -81,7 +81,7 @@ export default function SignUpPage() {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-slate-600/50 dark:bg-slate-700/50 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-slate-400 backdrop-blur-sm"
                   placeholder="you@example.com"
                 />
               </div>
@@ -98,7 +98,7 @@ export default function SignUpPage() {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-slate-600/50 dark:bg-slate-700/50 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-slate-400 backdrop-blur-sm"
                   placeholder="At least 6 characters"
                 />
                 <button
@@ -122,7 +122,7 @@ export default function SignUpPage() {
                   required
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-slate-600/50 dark:bg-slate-700/50 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-slate-400 backdrop-blur-sm"
                   placeholder="Re-enter password"
                 />
               </div>

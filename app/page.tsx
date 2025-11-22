@@ -83,7 +83,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-slate-900 dark:to-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* Hero Section */}
@@ -103,7 +103,7 @@ export default function HomePage() {
               placeholder="Search for anything..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700 border-0 rounded-2xl shadow-soft focus:shadow-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-lg placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800/50 dark:text-white dark:border-slate-700/50 border-0 rounded-2xl shadow-soft focus:shadow-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 transition-all text-lg placeholder:text-gray-400 dark:placeholder:text-slate-400 backdrop-blur-sm"
             />
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function HomePage() {
                   onClick={() => setSelectedCategory(category)}
                   className={`group relative inline-flex items-center px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl font-medium transition-all duration-200 whitespace-nowrap ${isSelected
                     ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30 scale-105'
-                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-soft hover:shadow-medium hover:scale-105'
+                    : 'bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700/70 shadow-soft hover:shadow-medium hover:scale-105 backdrop-blur-sm'
                     }`}
                 >
                   <IconComponent className={`w-4 h-4 mr-2 ${isSelected ? 'text-white' : 'text-gray-500'}`} />
@@ -140,7 +140,7 @@ export default function HomePage() {
 
         {/* Results Info */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-600 dark:text-gray-300 font-medium">
+          <p className="text-gray-600 dark:text-slate-300 font-medium">
             {filteredListings.length} {filteredListings.length === 1 ? 'item' : 'items'} found
             {selectedCategory !== 'All' && <span className="text-blue-600 dark:text-blue-400"> in {selectedCategory}</span>}
           </p>
@@ -185,7 +185,7 @@ export default function HomePage() {
                   className="group animate-scale-in"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-soft hover:shadow-medium transition-shadow">
+                  <div className="bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 rounded-2xl shadow-soft hover:shadow-medium dark:shadow-slate-900/50 transition-all backdrop-blur-sm">
                     {error && (
                       <div className="mb-6 p-4 rounded-xl border border-red-200 bg-red-50 flex flex-col gap-3 text-sm text-red-700">
                         <span>{error}</span>
