@@ -1,15 +1,17 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus, ShoppingBag, LayoutDashboard, LogOut, Menu, X } from 'lucide-react'
+import { Plus, ShoppingBag, LayoutDashboard, LogOut, Menu, X, Moon, Sun } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/lib/AuthProvider'
+import { useTheme } from '@/lib/ThemeProvider'
 import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { user, loading, signOut } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const router = useRouter()
 
   useEffect(() => {
@@ -32,8 +34,8 @@ export default function Header() {
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
-          ? 'bg-white/80 backdrop-blur-lg shadow-soft'
-          : 'bg-white'
+        ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-soft'
+        : 'bg-white dark:bg-gray-900'
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,12 +52,20 @@ export default function Header() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
             {loading ? (
-              <div className="text-gray-500 text-sm">Loading...</div>
+              <div className="text-gray-500 dark:text-gray-400 text-sm">Loading...</div>
             ) : user ? (
               <>
                 <Link href="/dashboard">
-                  <button className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                  <button className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
                     <LayoutDashboard className="w-5 h-5" />
                     <span>Dashboard</span>
                   </button>
@@ -66,11 +76,11 @@ export default function Header() {
                     Post Item
                   </button>
                 </Link>
-                <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
-                  <span className="text-sm text-gray-600 hidden lg:inline">{user.email}</span>
+                <div className="flex items-center space-x-3 pl-4 border-l border-gray-200 dark:border-gray-700">
+                  <span className="text-sm text-gray-600 dark:text-gray-400 hidden lg:inline">{user.email}</span>
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center space-x-1 text-sm text-red-600 hover:text-red-700 font-medium transition-colors"
+                    className="flex items-center space-x-1 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Sign Out</span>
@@ -80,7 +90,7 @@ export default function Header() {
             ) : (
               <>
                 <Link href="/auth/signin">
-                  <button className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                  <button className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
                     Sign In
                   </button>
                 </Link>
@@ -96,7 +106,7 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-gray-700 hover:text-blue-600 transition-colors"
+            className="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -105,17 +115,25 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
+        <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg">
           <div className="px-4 py-4 space-y-3">
+            {/* Theme Toggle Mobile */}
+            <button
+              onClick={toggleTheme}
+              className="w-full flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-colors"
+            >
+              <span>Theme</span>
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
             {loading ? (
-              <div className="text-gray-500 text-sm text-center">Loading...</div>
+              <div className="text-gray-500 dark:text-gray-400 text-sm text-center">Loading...</div>
             ) : user ? (
               <>
-                <div className="pb-3 border-b border-gray-200">
-                  <p className="text-sm text-gray-600 truncate">{user.email}</p>
+                <div className="pb-3 border-b border-gray-200 dark:border-gray-700">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 truncate">{user.email}</p>
                 </div>
                 <Link href="/dashboard" onClick={closeMobileMenu}>
-                  <button className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg font-medium transition-colors">
+                  <button className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-colors">
                     <LayoutDashboard className="w-5 h-5" />
                     <span>Dashboard</span>
                   </button>
@@ -128,7 +146,7 @@ export default function Header() {
                 </Link>
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center space-x-2 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg font-medium transition-colors"
+                  className="w-full flex items-center space-x-2 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg font-medium transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>
@@ -137,7 +155,7 @@ export default function Header() {
             ) : (
               <>
                 <Link href="/auth/signin" onClick={closeMobileMenu}>
-                  <button className="w-full px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg font-medium transition-colors">
+                  <button className="w-full px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-colors">
                     Sign In
                   </button>
                 </Link>
