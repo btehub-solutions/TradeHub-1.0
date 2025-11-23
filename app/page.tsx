@@ -97,7 +97,7 @@ export default function HomePage() {
 
           {/* Modern Search Bar */}
           <div className="relative max-w-2xl">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 w-5 h-5" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-300 w-5 h-5 z-10 pointer-events-none" />
             <input
               type="text"
               placeholder="Search for anything..."
