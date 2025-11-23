@@ -121,7 +121,7 @@ export default function Chatbot() {
 
             {/* Chat Window */}
             {isOpen && (
-                <div className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-200">
+                <div className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] h-[500px] bg-white dark:bg-slate-800/95 dark:border-slate-700/50 rounded-2xl shadow-2xl dark:shadow-slate-900/50 flex flex-col z-50 border border-gray-200 backdrop-blur-sm">
                     {/* Header */}
                     <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-t-2xl">
                         <h3 className="font-bold text-lg">TradeHub Support</h3>
@@ -129,7 +129,7 @@ export default function Chatbot() {
                     </div>
 
                     {/* Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 dark:bg-slate-900/50">
                         {messages.map((message) => (
                             <div
                                 key={message.id}
@@ -137,15 +137,15 @@ export default function Chatbot() {
                             >
                                 <div
                                     className={`max-w-[80%] px-4 py-2 rounded-2xl ${message.sender === 'user'
-                                        ? 'bg-blue-600 text-white rounded-br-none'
+                                        ? 'bg-blue-600 text-white rounded-br-none shadow-sm'
                                         : message.id === 'typing'
-                                            ? 'bg-gray-200 text-gray-600 rounded-bl-none italic'
-                                            : 'bg-gray-100 text-gray-900 rounded-bl-none'
+                                            ? 'bg-gray-200 dark:bg-slate-700/70 text-gray-600 dark:text-slate-300 rounded-bl-none italic'
+                                            : 'bg-white dark:bg-slate-700/70 dark:border dark:border-slate-600/50 text-gray-900 dark:text-slate-100 rounded-bl-none shadow-sm backdrop-blur-sm'
                                         }`}
                                 >
                                     <p className="text-sm whitespace-pre-line">{message.text}</p>
                                     {message.id !== 'typing' && (
-                                        <p className={`text-xs mt-1 ${message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
+                                        <p className={`text-xs mt-1 ${message.sender === 'user' ? 'text-blue-100' : 'text-gray-500 dark:text-slate-400'}`}>
                                             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </p>
                                     )}
@@ -156,7 +156,7 @@ export default function Chatbot() {
                     </div>
 
                     {/* Input */}
-                    <div className="p-4 border-t border-gray-200">
+                    <div className="p-4 border-t border-gray-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/70 rounded-b-2xl backdrop-blur-sm">
                         <div className="flex gap-2">
                             <input
                                 type="text"
@@ -164,12 +164,12 @@ export default function Chatbot() {
                                 onChange={(e) => setInputText(e.target.value)}
                                 onKeyPress={handleKeyPress}
                                 placeholder="Ask me anything about TradeHub..."
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="flex-1 px-4 py-2 border border-gray-300 dark:border-slate-600/50 dark:bg-slate-700/50 dark:text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all placeholder:text-gray-400 dark:placeholder:text-slate-400 backdrop-blur-sm"
                             />
                             <button
                                 onClick={handleSend}
                                 disabled={!inputText.trim()}
-                                className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
                                 aria-label="Send message"
                             >
                                 <Send className="w-5 h-5" />
