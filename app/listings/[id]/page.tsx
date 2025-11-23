@@ -51,8 +51,8 @@ export default function ListingDetailPage() {
     if (error) {
       return (
         <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-4">Listing unavailable</h1>
-          <p className="text-gray-600 mb-6 max-w-md">{error}</p>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Listing unavailable</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md">{error}</p>
           <Link
             href="/"
             className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition"
@@ -68,14 +68,14 @@ export default function ListingDetailPage() {
 
   // Format phone number for WhatsApp (remove leading 0, add 234)
   const phoneNumber = listing.seller_phone.replace(/^0/, '234')
-  const whatsappMessage = `Hi, I'm interested in your ${listing.title} listed on TradeHub for ₦${listing.price.toLocaleString()}` 
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}` 
+  const whatsappMessage = `Hi, I'm interested in your ${listing.title} listed on TradeHub for ₦${listing.price.toLocaleString()}`
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`
 
-  const displayImages = listing.images && listing.images.length > 0 
-    ? listing.images 
-    : listing.image_url 
-    ? [listing.image_url] 
-    : []
+  const displayImages = listing.images && listing.images.length > 0
+    ? listing.images
+    : listing.image_url
+      ? [listing.image_url]
+      : []
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % displayImages.length)
@@ -89,21 +89,21 @@ export default function ListingDetailPage() {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <Link
         href="/"
-        className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-6"
+        className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mb-6"
       >
         ← Back to listings
       </Link>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900/50 overflow-hidden border dark:border-slate-700/50">
         {/* Image Carousel */}
         {displayImages.length > 0 ? (
           <div className="relative">
             <img
               src={displayImages[currentImageIndex]}
               alt={`${listing.title} - Image ${currentImageIndex + 1}`}
-              className="w-full h-96 object-contain bg-gray-100"
+              className="w-full h-96 object-contain bg-gray-100 dark:bg-slate-700"
             />
-            
+
             {/* Navigation Arrows */}
             {displayImages.length > 1 && (
               <>
@@ -119,7 +119,7 @@ export default function ListingDetailPage() {
                 >
                   <ChevronRight className="w-6 h-6" />
                 </button>
-                
+
                 {/* Image Counter */}
                 <div className="absolute bottom-4 right-4 px-3 py-1.5 bg-black/70 text-white text-sm rounded-full">
                   {currentImageIndex + 1} / {displayImages.length}
@@ -134,62 +134,61 @@ export default function ListingDetailPage() {
                   <button
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      index === currentImageIndex 
-                        ? 'bg-white w-8' 
+                    className={`w-2 h-2 rounded-full transition-all ${index === currentImageIndex
+                        ? 'bg-white w-8'
                         : 'bg-white/50 hover:bg-white/75'
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
             )}
           </div>
         ) : (
-          <div className="w-full h-96 bg-gray-200 flex items-center justify-center">
-            <span className="text-gray-400 text-xl">No image available</span>
+          <div className="w-full h-96 bg-gray-200 dark:bg-slate-700 flex items-center justify-center">
+            <span className="text-gray-400 dark:text-gray-500 text-xl">No image available</span>
           </div>
         )}
 
         <div className="p-6">
           {/* Category Badge */}
-          <div className="inline-flex items-center bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+          <div className="inline-flex items-center bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-4">
             <Package className="w-4 h-4 mr-2" />
             {listing.category}
           </div>
 
-          <h1 className="text-3xl font-bold mb-4">{listing.title}</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{listing.title}</h1>
 
           <div className="flex items-baseline gap-4 mb-6">
-            <p className="text-4xl font-bold text-blue-600">
+            <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">
               ₦{listing.price.toLocaleString()}
             </p>
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center text-gray-600 dark:text-gray-400">
               <MapPin className="w-5 h-5 mr-1.5" />
               {listing.location}
             </div>
           </div>
 
           <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">Description</h2>
-            <p className="text-gray-700 whitespace-pre-line">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Description</h2>
+            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
               {listing.description}
             </p>
           </div>
 
-          <div className="border-t pt-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4">Seller Information</h2>
+          <div className="border-t dark:border-slate-700 pt-6 mb-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Seller Information</h2>
             <div className="space-y-3">
-              <div className="flex items-center text-gray-700">
-                <User className="w-5 h-5 mr-3 text-gray-400" />
+              <div className="flex items-center text-gray-700 dark:text-gray-300">
+                <User className="w-5 h-5 mr-3 text-gray-400 dark:text-gray-500" />
                 <div>
-                  <p className="text-xs text-gray-500">Name</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Name</p>
                   <p className="font-medium">{listing.seller_name}</p>
                 </div>
               </div>
-              <div className="flex items-center text-gray-700">
-                <Phone className="w-5 h-5 mr-3 text-gray-400" />
+              <div className="flex items-center text-gray-700 dark:text-gray-300">
+                <Phone className="w-5 h-5 mr-3 text-gray-400 dark:text-gray-500" />
                 <div>
-                  <p className="text-xs text-gray-500">Phone</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Phone</p>
                   <p className="font-medium">{listing.seller_phone}</p>
                 </div>
               </div>
