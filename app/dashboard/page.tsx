@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/AuthProvider'
 import { Listing } from '@/lib/supabase'
-import { Edit2, Trash2, CheckCircle, Eye, Plus, Package } from 'lucide-react'
+import { Edit2, Trash2, CheckCircle, Eye, Plus, Package, MapPin } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { toast } from 'react-hot-toast'
@@ -276,8 +276,9 @@ export default function DashboardPage() {
                         <p className="text-2xl font-bold text-blue-600">
                           ₦{listing.price.toLocaleString()}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                          📍 {listing.location}
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
+                          <MapPin className="w-4 h-4" />
+                          {listing.location}
                         </p>
                       </div>
                     </div>
