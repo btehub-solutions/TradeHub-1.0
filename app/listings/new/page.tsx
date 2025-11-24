@@ -181,28 +181,28 @@ export default function NewListingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-gray-900 dark:to-slate-900 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
         <div className="mb-8 animate-fade-in">
-          <Link href="/" className="inline-flex items-center text-gray-600 hover:text-blue-600 mb-4 group">
+          <Link href="/" className="inline-flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 mb-4 group">
             <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
             Back to listings
           </Link>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent mb-2">
             Post an Item
           </h1>
-          <p className="text-gray-600">Fill in the details to list your item</p>
+          <p className="text-gray-600 dark:text-gray-300">Fill in the details to list your item</p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-3xl shadow-large p-4 sm:p-6 md:p-8 animate-slide-up">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-large p-4 sm:p-6 md:p-8 animate-slide-up">
           <form onSubmit={handleSubmit} className="space-y-6">
 
             {/* Title */}
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
                 Item Title *
               </label>
               <input
@@ -211,13 +211,13 @@ export default function NewListingPage() {
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="e.g., iPhone 13 Pro Max 256GB"
-                className="w-full px-4 py-3.5 bg-gray-50 border-0 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-700 border-0 rounded-xl focus:bg-white dark:focus:bg-gray-600 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
 
             {/* Category */}
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
                 Category *
               </label>
               <div className="relative">
@@ -225,7 +225,7 @@ export default function NewListingPage() {
                   required
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-4 py-3.5 bg-gray-50 border-0 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 appearance-none cursor-pointer"
+                  className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-700 border-0 rounded-xl focus:bg-white dark:focus:bg-gray-600 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 dark:text-white appearance-none cursor-pointer"
                 >
                   {postCategories.map((category) => (
                     <option key={category} value={category}>
@@ -234,7 +234,7 @@ export default function NewListingPage() {
                   ))}
                 </select>
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
@@ -243,7 +243,7 @@ export default function NewListingPage() {
 
             {/* Description */}
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
                 Description *
               </label>
               <textarea
@@ -252,14 +252,14 @@ export default function NewListingPage() {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Describe your item in detail..."
                 rows={4}
-                className="w-full px-4 py-3.5 bg-gray-50 border-0 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400 resize-none"
+                className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-700 border-0 rounded-xl focus:bg-white dark:focus:bg-gray-600 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 resize-none"
               />
             </div>
 
             {/* Price & Location Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
                   Price (₦) *
                 </label>
                 <input
@@ -268,12 +268,12 @@ export default function NewListingPage() {
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   placeholder="25000"
-                  className="w-full px-4 py-3.5 bg-gray-50 border-0 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-700 border-0 rounded-xl focus:bg-white dark:focus:bg-gray-600 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
                   Location *
                 </label>
                 <input
@@ -282,7 +282,7 @@ export default function NewListingPage() {
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   placeholder="e.g., Ikeja, Lagos"
-                  className="w-full px-4 py-3.5 bg-gray-50 border-0 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-700 border-0 rounded-xl focus:bg-white dark:focus:bg-gray-600 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 />
               </div>
             </div>
@@ -290,7 +290,7 @@ export default function NewListingPage() {
             {/* Seller Info Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
                   Your Name *
                 </label>
                 <input
@@ -299,12 +299,12 @@ export default function NewListingPage() {
                   value={formData.seller_name}
                   onChange={(e) => setFormData({ ...formData, seller_name: e.target.value })}
                   placeholder="John Doe"
-                  className="w-full px-4 py-3.5 bg-gray-50 border-0 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-700 border-0 rounded-xl focus:bg-white dark:focus:bg-gray-600 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
                   WhatsApp Number *
                 </label>
                 <input
@@ -313,14 +313,14 @@ export default function NewListingPage() {
                   value={formData.seller_phone}
                   onChange={(e) => setFormData({ ...formData, seller_phone: e.target.value })}
                   placeholder="08012345678"
-                  className="w-full px-4 py-3.5 bg-gray-50 border-0 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-700 border-0 rounded-xl focus:bg-white dark:focus:bg-gray-600 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 />
               </div>
             </div>
 
             {/* Image Upload */}
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
                 Item Photo
               </label>
 
@@ -361,17 +361,17 @@ export default function NewListingPage() {
                   className="hidden"
                   disabled={previews.length >= 5}
                 />
-                <div className="flex flex-col items-center justify-center p-12 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-100 hover:border-blue-400 transition-all">
-                  <Upload className="w-12 h-12 text-gray-400 mb-3" />
-                  <span className="text-base font-semibold text-gray-700">Upload Photos</span>
-                  <span className="text-sm text-gray-500 mt-1">
+                <div className="flex flex-col items-center justify-center p-12 bg-gray-50 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-blue-400 dark:hover:border-blue-500 transition-all">
+                  <Upload className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-3" />
+                  <span className="text-base font-semibold text-gray-700 dark:text-gray-200">Upload Photos</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                     {previews.length > 0 ? `${previews.length}/5 images` : 'Click to select from your files'}
                   </span>
                 </div>
               </label>
 
-              <p className="text-xs text-gray-500 flex items-start mt-2">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 mr-2"></span>
+              <p className="text-xs text-gray-500 dark:text-gray-400 flex items-start mt-2">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 mt-1.5 mr-2"></span>
                 Add up to 5 photos (optional, max 5MB each). First image will be the main photo.
               </p>
             </div>
