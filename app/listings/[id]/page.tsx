@@ -86,7 +86,7 @@ export default function ListingDetailPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
       <Link
         href="/"
         className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mb-6"
@@ -135,8 +135,8 @@ export default function ListingDetailPage() {
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
                     className={`w-2 h-2 rounded-full transition-all ${index === currentImageIndex
-                        ? 'bg-white w-8'
-                        : 'bg-white/50 hover:bg-white/75'
+                      ? 'bg-white w-8'
+                      : 'bg-white/50 hover:bg-white/75'
                       }`}
                   />
                 ))}
@@ -149,22 +149,22 @@ export default function ListingDetailPage() {
           </div>
         )}
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Category Badge */}
           <div className="inline-flex items-center bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-4">
             <Package className="w-4 h-4 mr-2" />
             {listing.category}
           </div>
 
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{listing.title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 break-words">{listing.title}</h1>
 
-          <div className="flex items-baseline gap-4 mb-6">
-            <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">
+          <div className="flex flex-col sm:flex-row sm:items-baseline gap-3 sm:gap-4 mb-6">
+            <p className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400">
               ₦{listing.price.toLocaleString()}
             </p>
-            <div className="flex items-center text-gray-600 dark:text-gray-400">
-              <MapPin className="w-5 h-5 mr-1.5" />
-              {listing.location}
+            <div className="flex items-start sm:items-center text-gray-600 dark:text-gray-400">
+              <MapPin className="w-5 h-5 mr-1.5 flex-shrink-0 mt-0.5 sm:mt-0" />
+              <span className="break-words text-sm sm:text-base">{listing.location}</span>
             </div>
           </div>
 
@@ -175,21 +175,21 @@ export default function ListingDetailPage() {
             </p>
           </div>
 
-          <div className="border-t dark:border-slate-700 pt-6 mb-6">
+          <div className="border-t dark:border-slate-700 pt-4 sm:pt-6 mb-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Seller Information</h2>
             <div className="space-y-3">
               <div className="flex items-center text-gray-700 dark:text-gray-300">
                 <User className="w-5 h-5 mr-3 text-gray-400 dark:text-gray-500" />
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-xs text-gray-500 dark:text-gray-400">Name</p>
-                  <p className="font-medium">{listing.seller_name}</p>
+                  <p className="font-medium break-words">{listing.seller_name}</p>
                 </div>
               </div>
               <div className="flex items-center text-gray-700 dark:text-gray-300">
                 <Phone className="w-5 h-5 mr-3 text-gray-400 dark:text-gray-500" />
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-xs text-gray-500 dark:text-gray-400">Phone</p>
-                  <p className="font-medium">{listing.seller_phone}</p>
+                  <p className="font-medium break-words">{listing.seller_phone}</p>
                 </div>
               </div>
             </div>
@@ -199,10 +199,10 @@ export default function ListingDetailPage() {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-lg font-semibold text-lg transition-colors"
+            className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-colors"
           >
-            <MessageCircle className="w-5 h-5 mr-2" />
-            Contact Seller on WhatsApp
+            <MessageCircle className="w-5 h-5 mr-2 flex-shrink-0" />
+            <span className="truncate">Contact Seller on WhatsApp</span>
           </a>
         </div>
       </div>
