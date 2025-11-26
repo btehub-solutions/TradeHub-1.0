@@ -1,12 +1,3 @@
-'use client'
-
-import Link from 'next/link'
-import { Plus, ShoppingBag, LayoutDashboard, LogOut, Menu, X, Moon, Sun, Home } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import { useAuth } from '@/lib/AuthProvider'
-import { useTheme } from '@/lib/ThemeProvider'
-import { useRouter } from 'next/navigation'
-
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)

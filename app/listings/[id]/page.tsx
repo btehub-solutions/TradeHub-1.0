@@ -218,7 +218,7 @@ export default function ListingDetailPage() {
               <ul className="space-y-3">
                 <li className="flex items-start text-sm text-gray-700 dark:text-gray-300">
                   <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
-                  <span>Click "Contact Seller" to chat via WhatsApp</span>
+                  <span>Click &quot;Contact Seller&quot; to chat via WhatsApp</span>
                 </li>
                 <li className="flex items-start text-sm text-gray-700 dark:text-gray-300">
                   <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
