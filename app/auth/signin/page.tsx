@@ -23,6 +23,15 @@ export default function SignInPage() {
     if (!authLoading && user) {
       router.replace('/dashboard')
     }
+
+    // Check for error in URL query params
+    const searchParams = new URLSearchParams(window.location.search)
+    const errorParam = searchParams.get('error')
+    if (errorParam) {
+      setError(decodeURIComponent(errorParam))
+      // Clean up URL
+      window.history.replaceState({}, '', '/auth/signin')
+    }
   }, [authLoading, user, router])
 
   const handleGoogleSignIn = async () => {

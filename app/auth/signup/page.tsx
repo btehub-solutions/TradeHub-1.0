@@ -21,12 +21,16 @@ export default function SignUpPage() {
   const handleGoogleSignUp = async () => {
     try {
       setError('')
+      // Set intent to signup so callback knows to check for existing users
+      sessionStorage.setItem('auth_intent', 'signup')
       const { error } = await signInWithGoogle()
       if (error) {
+        sessionStorage.removeItem('auth_intent')
         setError(error.message)
       }
       // User will be redirected to Google for authentication
     } catch (err: any) {
+      sessionStorage.removeItem('auth_intent')
       setError(err.message || 'Failed to sign up with Google')
     }
   }

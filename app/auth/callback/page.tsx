@@ -20,6 +20,31 @@ export default function AuthCallback() {
                 }
 
                 if (session) {
+                    // Check if user came from signup page
+                    const fromSignup = sessionStorage.getItem('auth_intent') === 'signup'
+
+                    if (fromSignup) {
+                        // Clear the intent
+                        sessionStorage.removeItem('auth_intent')
+
+                        // Check if this is a new user by looking at created_at
+                        const { data: { user } } = await supabase.auth.getUser()
+
+                        if (user) {
+                            const createdAt = new Date(user.created_at)
+                            const now = new Date()
+                            const timeDiff = now.getTime() - createdAt.getTime()
+                            const isNewUser = timeDiff < 10000 // Created within last 10 seconds
+
+                            if (!isNewUser) {
+                                // Existing user tried to sign up, sign them out and redirect
+                                await supabase.auth.signOut()
+                                router.push('/auth/signin?error=This account already exists. Please sign in instead.')
+                                return
+                            }
+                        }
+                    }
+
                     // Successfully authenticated, redirect to dashboard
                     router.push('/dashboard')
                     router.refresh()
