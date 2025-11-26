@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus, ShoppingBag, LayoutDashboard, LogOut, Menu, X, Moon, Sun } from 'lucide-react'
+import { Plus, ShoppingBag, LayoutDashboard, LogOut, Menu, X, Moon, Sun, Home } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/lib/AuthProvider'
 import { useTheme } from '@/lib/ThemeProvider'
@@ -60,6 +60,15 @@ export default function Header() {
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
+
+            {/* Home Button */}
+            <Link href="/">
+              <button className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
+                <Home className="w-5 h-5" />
+                <span>Home</span>
+              </button>
+            </Link>
+
             {loading ? (
               <div className="text-gray-500 dark:text-gray-400 text-sm">Loading...</div>
             ) : user ? (
@@ -125,6 +134,15 @@ export default function Header() {
               <span>Theme</span>
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
+
+            {/* Home Button Mobile */}
+            <Link href="/" onClick={closeMobileMenu}>
+              <button className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-colors">
+                <Home className="w-5 h-5" />
+                <span>Home</span>
+              </button>
+            </Link>
+
             {loading ? (
               <div className="text-gray-500 dark:text-gray-400 text-sm text-center">Loading...</div>
             ) : user ? (
