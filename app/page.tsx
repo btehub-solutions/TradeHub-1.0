@@ -124,7 +124,7 @@ export default function HomePage() {
             <FeatureCard
               icon={AlertCircle}
               title="The Problem"
-              description="Finding trustworthy buyers and sellers locally can be challenging. Traditional marketplaces often lack transparency, have hidden fees, and don't prioritize user safety. Many people struggle to declutter their homes or find affordable pre-owned items because there's no reliable platform connecting local communities."
+              description="Finding trustworthy buyers and sellers locally can be challenging. Traditional marketplaces often lack transparency, have hidden fees, and don&apos;t prioritize user safety. Many people struggle to declutter their homes or find affordable pre-owned items because there&apos;s no reliable platform connecting local communities."
               iconBgColor="bg-red-50 dark:bg-red-900/20"
               iconColor="text-red-600 dark:text-red-400"
             />
