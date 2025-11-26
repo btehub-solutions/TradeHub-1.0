@@ -102,3 +102,16 @@ export const signIn = async (email: string, password: string) => {
 export const signOut = async () => {
   return await supabase.auth.signOut()
 }
+
+export const signInWithGoogle = async () => {
+  return await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined,
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+      }
+    }
+  })
+}
