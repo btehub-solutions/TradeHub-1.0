@@ -24,7 +24,7 @@ export default function HeroHeader() {
                 <div className="text-center">
                     {/* Main Heading */}
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-4 leading-[1.1] tracking-tight animate-slide-up">
-                        Nigeria's Most
+                        Nigeria&apos;s Most
                         <br />
                         <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-indigo-400 bg-clip-text text-transparent">
                             Trusted Marketplace
