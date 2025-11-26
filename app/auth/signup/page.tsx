@@ -51,7 +51,15 @@ export default function SignUpPage() {
       const { data, error } = await signUp(formData.email, formData.password)
 
       if (error) {
-        throw error
+        // Check if it's a duplicate email error
+        if (error.message.toLowerCase().includes('already') ||
+          error.message.toLowerCase().includes('exists') ||
+          error.message.toLowerCase().includes('registered')) {
+          setError('This email is already registered. Please sign in instead.')
+        } else {
+          setError(error.message)
+        }
+        return
       }
 
       // User is signed in directly after signup
@@ -61,7 +69,15 @@ export default function SignUpPage() {
         router.refresh()
       }
     } catch (err: any) {
-      setError(err?.message || 'Failed to create account')
+      const errorMessage = err?.message || 'Failed to create account'
+      // Check if it's a duplicate email error
+      if (errorMessage.toLowerCase().includes('already') ||
+        errorMessage.toLowerCase().includes('exists') ||
+        errorMessage.toLowerCase().includes('registered')) {
+        setError('This email is already registered. Please sign in instead.')
+      } else {
+        setError(errorMessage)
+      }
     } finally {
       setLoading(false)
     }
@@ -77,8 +93,15 @@ export default function SignUpPage() {
 
         <div className="bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 rounded-2xl shadow-xl backdrop-blur-sm p-6 sm:p-8">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
               {error}
+              {error.includes('already registered') && (
+                <div className="mt-2">
+                  <Link href="/auth/signin" className="font-semibold underline hover:text-red-800 dark:hover:text-red-300">
+                    Go to Sign In →
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 
