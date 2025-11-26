@@ -4,7 +4,6 @@ import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Chatbot from '@/components/Chatbot'
-import MobileNav from '@/components/MobileNav'
 import { AuthProvider } from '@/lib/AuthProvider'
 import { ThemeProvider } from '@/lib/ThemeProvider'
 import { Toaster } from 'react-hot-toast'
@@ -30,12 +29,11 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <Header />
-            <main className="flex-grow bg-gray-50 dark:bg-gray-900 pb-20 md:pb-0">
+            <main className="flex-grow bg-gray-50 dark:bg-gray-900">
               {children}
             </main>
             <Footer />
             <Chatbot />
-            <MobileNav />
           </AuthProvider>
           <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
         </ThemeProvider>
