@@ -36,7 +36,7 @@ export default function HeroHeader() {
                     {/* Description */}
                     <p className="text-lg sm:text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-10 leading-relaxed animate-fade-in">
                         Discover incredible deals on pre-loved items in your community.
-                        Sell what you don't need, buy what you love, and connect with neighbors.
+                        Sell what you don&apos;t need, buy what you love, and connect with neighbors.
                     </p>
 
                     {/* CTA Buttons */}
