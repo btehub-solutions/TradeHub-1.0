@@ -116,7 +116,7 @@ export default function HomePage() {
               Why We Built This Platform
             </h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              We're on a mission to make local trading simple, safe, and accessible for everyone
+              We&apos;re on a mission to make local trading simple, safe, and accessible for everyone
             </p>
           </div>
 
