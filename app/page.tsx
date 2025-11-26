@@ -109,35 +109,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Why We Built This Platform Section */}
-        <div className="mb-16 animate-fade-in">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3">
-              Why We Built This Platform
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              We&apos;re on a mission to make local trading simple, safe, and accessible for everyone
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-            <FeatureCard
-              icon={AlertCircle}
-              title="The Problem"
-              description="Finding trustworthy buyers and sellers locally can be challenging. Traditional marketplaces often lack transparency, have hidden fees, and don&apos;t prioritize user safety. Many people struggle to declutter their homes or find affordable pre-owned items because there&apos;s no reliable platform connecting local communities."
-              iconBgColor="bg-red-50 dark:bg-red-900/20"
-              iconColor="text-red-600 dark:text-red-400"
-            />
-
-            <FeatureCard
-              icon={Lightbulb}
-              title="Our Solution"
-              description="TradeHub brings local buyers and sellers together in one secure, transparent marketplace. We verify users, provide clear pricing with no hidden fees, and create a trusted community where you can buy quality pre-owned items or sell things you no longer need. Everything happens locally, making transactions faster, safer, and more personal."
-              iconBgColor="bg-green-50 dark:bg-green-900/20"
-              iconColor="text-green-600 dark:text-green-400"
-            />
-          </div>
-        </div>
 
         {/* Category Pills */}
         <div className="mb-8 animate-slide-up">
@@ -284,6 +255,36 @@ export default function HomePage() {
             })}
           </div>
         )}
+
+        {/* Why We Built This Platform Section */}
+        <div className="mt-20 mb-16 animate-fade-in">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3">
+              Why We Built This Platform
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              We&apos;re on a mission to make local trading simple, safe, and accessible for everyone
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            <FeatureCard
+              icon={AlertCircle}
+              title="The Problem"
+              description="Finding trustworthy buyers and sellers locally can be challenging. Traditional marketplaces often lack transparency, have hidden fees, and don&apos;t prioritize user safety. Many people struggle to declutter their homes or find affordable pre-owned items because there&apos;s no reliable platform connecting local communities."
+              iconBgColor="bg-red-50 dark:bg-red-900/20"
+              iconColor="text-red-600 dark:text-red-400"
+            />
+
+            <FeatureCard
+              icon={Lightbulb}
+              title="Our Solution"
+              description="TradeHub brings local buyers and sellers together in one secure, transparent marketplace. We verify users, provide clear pricing with no hidden fees, and create a trusted community where you can buy quality pre-owned items or sell things you no longer need. Everything happens locally, making transactions faster, safer, and more personal."
+              iconBgColor="bg-green-50 dark:bg-green-900/20"
+              iconColor="text-green-600 dark:text-green-400"
+            />
+          </div>
+        </div>
       </div>
     </div>
   )
