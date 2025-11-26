@@ -211,8 +211,8 @@ export default function HomePage() {
         ) : (
           <>
             <div className={`grid gap-6 ${viewMode === 'single'
-                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-                : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                ? 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'
+                : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
               }`}>
               {paginatedListings.map((listing, index) => {
                 const IconComponent = getIcon(CATEGORY_ICONS[listing.category])
@@ -334,8 +334,8 @@ export default function HomePage() {
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
                         className={`min-w-[40px] h-10 px-3 rounded-lg font-medium transition-all ${currentPage === pageNum
-                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30'
-                            : 'bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700/70 shadow-soft hover:shadow-medium'
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30'
+                          : 'bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700/70 shadow-soft hover:shadow-medium'
                           }`}
                       >
                         {pageNum}

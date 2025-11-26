@@ -4,12 +4,13 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { signUp, signInWithGoogle } from '@/lib/supabase'
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 
 export default function SignUpPage() {
   const router = useRouter()
   const [formData, setFormData] = useState({
+    fullName: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -52,7 +53,7 @@ export default function SignUpPage() {
     setLoading(true)
 
     try {
-      const { data, error } = await signUp(formData.email, formData.password)
+      const { data, error } = await signUp(formData.email, formData.password, formData.fullName)
 
       if (error) {
         // Check if it's a duplicate email error
@@ -110,6 +111,23 @@ export default function SignUpPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                Full Name
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+                <input
+                  type="text"
+                  required
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-slate-600/50 dark:bg-slate-700/50 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-slate-400 backdrop-blur-sm"
+                  placeholder="John Doe"
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Email Address

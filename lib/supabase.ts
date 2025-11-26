@@ -85,12 +85,15 @@ export const getCurrentUser = async () => {
   return { user, error }
 }
 
-export const signUp = async (email: string, password: string) => {
+export const signUp = async (email: string, password: string, fullName: string) => {
   return await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined
+      emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined,
+      data: {
+        full_name: fullName
+      }
     }
   })
 }

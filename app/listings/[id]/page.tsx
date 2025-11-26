@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Listing } from '@/lib/supabase'
 import Link from 'next/link'
 import { notFound, useParams } from 'next/navigation'
-import { ChevronLeft, ChevronRight, MapPin, MessageCircle, User, Phone, Package } from 'lucide-react'
+import { ChevronLeft, ChevronRight, MapPin, MessageCircle, User, Phone, Package, Shield, Info } from 'lucide-react'
 
 export default function ListingDetailPage() {
   const params = useParams()
@@ -199,11 +199,70 @@ export default function ListingDetailPage() {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-colors"
+            className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-colors mb-8"
           >
             <MessageCircle className="w-5 h-5 mr-2 flex-shrink-0" />
             <span className="truncate">Contact Seller on WhatsApp</span>
           </a>
+
+          {/* How it Works & Safety Tips */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* How it Works */}
+            <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-xl p-5">
+              <div className="flex items-center mb-4">
+                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mr-3">
+                  <Info className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">How it Works</h3>
+              </div>
+              <ul className="space-y-3">
+                <li className="flex items-start text-sm text-gray-700 dark:text-gray-300">
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                  <span>Click "Contact Seller" to chat via WhatsApp</span>
+                </li>
+                <li className="flex items-start text-sm text-gray-700 dark:text-gray-300">
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                  <span>Check availability and arrange a meeting</span>
+                </li>
+                <li className="flex items-start text-sm text-gray-700 dark:text-gray-300">
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                  <span>Meet in a safe, public location</span>
+                </li>
+                <li className="flex items-start text-sm text-gray-700 dark:text-gray-300">
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                  <span>Inspect the item before paying</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Safety Tips */}
+            <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl p-5">
+              <div className="flex items-center mb-4">
+                <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mr-3">
+                  <Shield className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Safety Tips</h3>
+              </div>
+              <ul className="space-y-3">
+                <li className="flex items-start text-sm text-gray-700 dark:text-gray-300">
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                  <span>Never pay in advance for items</span>
+                </li>
+                <li className="flex items-start text-sm text-gray-700 dark:text-gray-300">
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                  <span>Meet in open, public places</span>
+                </li>
+                <li className="flex items-start text-sm text-gray-700 dark:text-gray-300">
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                  <span>Check the item thoroughly</span>
+                </li>
+                <li className="flex items-start text-sm text-gray-700 dark:text-gray-300">
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                  <span>Pay only when satisfied</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
