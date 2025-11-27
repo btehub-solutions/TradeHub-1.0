@@ -52,7 +52,7 @@ export default function Footer() {
 
   const footerLinks = {
     marketplace: [
-      { name: 'Browse Items', href: '/listings' },
+      { name: 'Browse Items', href: '/categories' },
       { name: 'Categories', href: '/categories' },
       { name: 'Community', href: 'https://whatsapp.com/channel/0029VbBTaETCsU9OMAeJuA45' },
     ],
@@ -75,9 +75,9 @@ export default function Footer() {
   return (
     <footer className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 gap-8 md:gap-12 mb-16">
           {/* Brand Column */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="col-span-2 lg:col-span-2 space-y-8">
             <Link href="/" className="flex items-center space-x-2 group w-fit">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform shadow-lg shadow-blue-500/20">
                 <ShoppingBag className="w-6 h-6 text-white" strokeWidth={2.5} />
