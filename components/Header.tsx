@@ -83,7 +83,7 @@ export default function Header() {
             <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
               Home
             </Link>
-            <Link href="/browse" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
+            <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
               Browse Items
             </Link>
             <Link href="/listings/new" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
@@ -140,22 +140,7 @@ export default function Header() {
                           <LayoutDashboard className="w-4 h-4 text-gray-400" />
                           <span>My Dashboard</span>
                         </Link>
-                        <Link
-                          href="/listings/my"
-                          onClick={() => setUserMenuOpen(false)}
-                          className="flex items-center space-x-3 px-3 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
-                        >
-                          <Package className="w-4 h-4 text-gray-400" />
-                          <span>My Listings</span>
-                        </Link>
-                        <Link
-                          href="/account"
-                          onClick={() => setUserMenuOpen(false)}
-                          className="flex items-center space-x-3 px-3 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
-                        >
-                          <User className="w-4 h-4 text-gray-400" />
-                          <span>My Account</span>
-                        </Link>
+
                         <div className="h-px bg-gray-100 dark:bg-gray-800 my-1" />
                         <button
                           onClick={handleSignOut}
@@ -208,7 +193,7 @@ export default function Header() {
               </button>
             </Link>
 
-            <Link href="/browse" onClick={closeMobileMenu}>
+            <Link href="/" onClick={closeMobileMenu}>
               <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
                 <Package className="w-5 h-5 text-gray-400" />
                 <span>Browse Items</span>

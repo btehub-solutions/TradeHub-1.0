@@ -99,6 +99,35 @@ export default function DashboardPage() {
     }
   }
 
+  const handleMarkAsSold = async (id: string) => {
+    if (!confirm('Mark this item as sold?')) return
+
+    try {
+      const response = await fetch(`/api/listings/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user?.id,
+          data: { status: 'sold' }
+        })
+      })
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}))
+        throw new Error(body?.error || 'Failed to mark as sold')
+      }
+
+      // Update local state
+      setListings(listings.map(l => l.id === id ? { ...l, status: 'sold' } : l))
+      toast.success('Item marked as sold')
+    } catch (error) {
+      console.error('Error marking as sold:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to mark as sold')
+    }
+  }
+
   const getCategoryIcon = (category: string) => {
     const iconMap: Record<string, keyof typeof LucideIcons> = {
       'Electronics': 'Smartphone',
@@ -196,8 +225,8 @@ export default function DashboardPage() {
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${filter === f
-                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-sm'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                  ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                   }`}
               >
                 {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -263,8 +292,8 @@ export default function DashboardPage() {
                   )}
                   <div className="absolute top-3 right-3">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm backdrop-blur-md ${listing.status === 'available'
-                        ? 'bg-green-500/90 text-white'
-                        : 'bg-gray-900/90 text-white'
+                      ? 'bg-green-500/90 text-white'
+                      : 'bg-gray-900/90 text-white'
                       }`}>
                       {listing.status === 'available' ? 'Active' : 'Sold'}
                     </span>
@@ -313,15 +342,18 @@ export default function DashboardPage() {
 
                     {listing.status === 'available' && (
                       <>
+                        <Link href={`/listings/${listing.id}/edit`} className="col-span-2">
+                          <button className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-blue-500 hover:text-blue-600 transition-colors text-sm">
+                            <Edit2 className="w-4 h-4" />
+                            Edit Listing
+                          </button>
+                        </Link>
                         <button
-                          onClick={() => {
-                            // Implement edit logic or redirect to edit page
-                            toast.success('Edit feature coming soon')
-                          }}
-                          className="flex items-center justify-center gap-2 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-blue-500 hover:text-blue-600 transition-colors text-sm"
+                          onClick={() => handleMarkAsSold(listing.id)}
+                          className="flex items-center justify-center gap-2 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-green-500 hover:text-green-600 transition-colors text-sm"
                         >
-                          <Edit2 className="w-4 h-4" />
-                          Edit
+                          <CheckCircle className="w-4 h-4" />
+                          Mark as Sold
                         </button>
                         <button
                           onClick={() => handleDelete(listing.id)}

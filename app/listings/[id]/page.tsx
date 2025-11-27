@@ -3,22 +3,32 @@
 import { useEffect, useState } from 'react'
 import { Listing } from '@/lib/supabase'
 import Link from 'next/link'
-import { notFound, useParams } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { ChevronLeft, ChevronRight, MapPin, MessageCircle, User, Phone, Package, Shield, Info } from 'lucide-react'
 
-export default function ListingDetailPage() {
-  const params = useParams()
+export default function ListingDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const [listingId, setListingId] = useState<string>('')
   const [listing, setListing] = useState<Listing | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
+  // Unwrap params
   useEffect(() => {
-    const id = params.id as string
+    const init = async () => {
+      const resolvedParams = await params
+      setListingId(resolvedParams.id)
+    }
+    init()
+  }, [params])
+
+  // Fetch listing
+  useEffect(() => {
+    if (!listingId) return
 
     const fetchListing = async () => {
       try {
-        const response = await fetch(`/api/listings/${id}`, { cache: 'no-store' })
+        const response = await fetch(`/api/listings/${listingId}`, { cache: 'no-store' })
 
         if (!response.ok) {
           throw new Error('Failed to fetch listing')
@@ -37,7 +47,7 @@ export default function ListingDetailPage() {
     }
 
     fetchListing()
-  }, [params.id])
+  }, [listingId])
 
   if (loading) {
     return (
