@@ -207,8 +207,8 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+        <div className="pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-center gap-3">
             <div className="relative w-24 h-8">
               <img
                 src="/btehub-logo.jpg"
@@ -216,7 +216,7 @@ export default function Footer() {
                 className="w-full h-full object-contain"
               />
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 text-left">
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center md:text-left">
               © 2025 TradeHub - A product of BTEHub Solutions.
             </p>
           </div>
