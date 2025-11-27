@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/AuthProvider'
 import { Listing } from '@/lib/supabase'
 import {
   Edit2, Trash2, CheckCircle, Eye, Plus, Package, MapPin,
-  TrendingUp, DollarSign, ShoppingBag, Activity, Search, Filter,
+  TrendingUp, Banknote, ShoppingBag, Activity, Search, Filter,
   MoreVertical, Calendar
 } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
@@ -119,8 +119,10 @@ export default function DashboardPage() {
         throw new Error(body?.error || 'Failed to mark as sold')
       }
 
-      // Update local state
-      setListings(listings.map(l => l.id === id ? { ...l, status: 'sold' } : l))
+      // Update local state using functional update to avoid stale state
+      setListings(prevListings =>
+        prevListings.map(l => l.id === id ? { ...l, status: 'sold' as const } : l)
+      )
       toast.success('Item marked as sold')
     } catch (error) {
       console.error('Error marking as sold:', error)
@@ -205,7 +207,7 @@ export default function DashboardPage() {
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow group">
               <div className="flex items-center justify-between mb-4">
                 <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
-                  <DollarSign className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                  <Banknote className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                 </div>
                 <span className="text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-full">Value</span>
               </div>

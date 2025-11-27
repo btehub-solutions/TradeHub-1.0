@@ -83,9 +83,6 @@ export default function Header() {
             <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
               Home
             </Link>
-            <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
-              Browse Items
-            </Link>
             <Link href="/listings/new" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
               Sell Item
             </Link>
@@ -190,13 +187,6 @@ export default function Header() {
               <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
                 <Home className="w-5 h-5 text-gray-400" />
                 <span>Home</span>
-              </button>
-            </Link>
-
-            <Link href="/" onClick={closeMobileMenu}>
-              <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
-                <Package className="w-5 h-5 text-gray-400" />
-                <span>Browse Items</span>
               </button>
             </Link>
 
