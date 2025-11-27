@@ -7,14 +7,13 @@ import { useTheme } from '@/lib/ThemeProvider'
 import { useRouter } from 'next/navigation'
 import {
   ShoppingBag, Menu, X, Sun, Moon, LogOut, LayoutDashboard,
-  Search, Heart, Package, User, Home, Plus
+  Package, User, Home, Plus
 } from 'lucide-react'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const { user, loading, signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const router = useRouter()
@@ -46,14 +45,6 @@ export default function Header() {
     setMobileMenuOpen(false)
     setUserMenuOpen(false)
     router.push('/')
-  }
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      // Implement search functionality or redirect to search page
-      console.log('Searching for:', searchQuery)
-    }
   }
 
   const closeMobileMenu = () => setMobileMenuOpen(false)
@@ -100,24 +91,7 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Search Bar (Desktop) */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4">
-            <form onSubmit={handleSearch} className="w-full relative group">
-              <input
-                type="text"
-                placeholder="Search items..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-4 pr-12 py-2.5 bg-gray-50 dark:bg-gray-800 border-transparent focus:bg-white dark:focus:bg-gray-800 border focus:border-blue-500 dark:focus:border-blue-400 rounded-full transition-all outline-none text-gray-700 dark:text-gray-200 placeholder:text-gray-400"
-              />
-              <button
-                type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-md"
-              >
-                <Search className="w-4 h-4" />
-              </button>
-            </form>
-          </div>
+
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-3 flex-shrink-0">
@@ -134,12 +108,7 @@ export default function Header() {
               <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
             ) : user ? (
               <div className="flex items-center space-x-3">
-                <Link href="/wishlist">
-                  <button className="p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative">
-                    <Heart className="w-5 h-5" />
-                    {/* <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></span> */}
-                  </button>
-                </Link>
+
 
                 {/* User Dropdown */}
                 <div className="relative user-menu-container">
@@ -230,19 +199,7 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg animate-in slide-in-from-top-5 duration-200">
           <div className="px-4 py-4 space-y-3">
-            {/* Mobile Search */}
-            <form onSubmit={handleSearch} className="relative mb-4">
-              <input
-                type="text"
-                placeholder="Search items..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-4 pr-10 py-3 bg-gray-50 dark:bg-gray-800 border-transparent focus:bg-white dark:focus:bg-gray-800 border focus:border-blue-500 dark:focus:border-blue-400 rounded-xl transition-all outline-none"
-              />
-              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <Search className="w-5 h-5" />
-              </button>
-            </form>
+
 
             <Link href="/" onClick={closeMobileMenu}>
               <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
@@ -253,7 +210,7 @@ export default function Header() {
 
             <Link href="/browse" onClick={closeMobileMenu}>
               <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
-                <Search className="w-5 h-5 text-gray-400" />
+                <Package className="w-5 h-5 text-gray-400" />
                 <span>Browse Items</span>
               </button>
             </Link>
