@@ -1,9 +1,20 @@
 'use client'
 
-import { Mail, Phone, Globe, Facebook, Linkedin, Instagram } from 'lucide-react'
+import { Mail, Phone, Facebook, Linkedin, Instagram, Package } from 'lucide-react'
+import Link from 'next/link'
 
 export default function Footer() {
   const socialLinks = [
+    {
+      name: 'Instagram',
+      url: 'https://www.instagram.com/bensamoladoyin?igsh=MTB3M281MnJ3bjdxbA%3D%3D&utm_source=qr',
+      icon: Instagram,
+    },
+    {
+      name: 'Facebook',
+      url: 'https://www.facebook.com/share/1YwxtU9UPy/?mibextid=wwXIfr',
+      icon: Facebook,
+    },
     {
       name: 'WhatsApp',
       url: 'https://wa.me/2347045422815',
@@ -19,21 +30,6 @@ export default function Footer() {
       ),
     },
     {
-      name: 'Facebook',
-      url: 'https://www.facebook.com/share/1YwxtU9UPy/?mibextid=wwXIfr',
-      icon: Facebook,
-    },
-    {
-      name: 'LinkedIn',
-      url: 'https://www.linkedin.com/in/ben-sam-oladoyin-527966233?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app',
-      icon: Linkedin,
-    },
-    {
-      name: 'Instagram',
-      url: 'https://www.instagram.com/bensamoladoyin?igsh=MTB3M281MnJ3bjdxbA%3D%3D&utm_source=qr',
-      icon: Instagram,
-    },
-    {
       name: 'X',
       url: 'https://x.com/bensam_ola42584?s=21',
       icon: () => (
@@ -47,83 +43,177 @@ export default function Footer() {
         </svg>
       ),
     },
+    {
+      name: 'LinkedIn',
+      url: 'https://www.linkedin.com/in/ben-sam-oladoyin-527966233?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app',
+      icon: Linkedin,
+    },
   ]
 
+  const footerLinks = {
+    marketplace: [
+      { name: 'Browse Items', href: '/browse' },
+      { name: 'Categories', href: '/categories' },
+      { name: 'Community', href: '/community' },
+    ],
+    selling: [
+      { name: 'Sell Item', href: '/sell' },
+      { name: 'Seller Guide', href: '/seller-guide' },
+    ],
+    support: [
+      { name: 'Help Center', href: '/help' },
+      { name: 'Contact Us', href: '/contact' },
+      { name: 'Safety Tips', href: '/safety' },
+    ],
+    company: [
+      { name: 'About Us', href: '/about' },
+      { name: 'Privacy Policy', href: '/privacy' },
+      { name: 'Terms of Service', href: '/terms' },
+    ],
+  }
+
   return (
-    <footer className="bg-gradient-to-br from-gray-800 to-gray-900 border-t border-gray-700 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Main Content - Responsive Layout */}
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+    <footer className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 pt-16 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 mb-16">
+          {/* Brand Column */}
+          <div className="lg:col-span-2 space-y-8">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white">
+                <Package className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-xl text-gray-900 dark:text-white">TradeHub</h3>
+                <p className="text-xs text-blue-600 font-medium">The Students Marketplace</p>
+              </div>
+            </div>
 
-          {/* Left Section: Copyright & Tagline */}
-          <div className="text-center lg:text-left">
-            <p className="text-sm font-semibold text-white">
-              © 2025 TradeHub — A Product of{' '}
-              <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">
-                BTEHub Solutions
-              </span>
+            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed max-w-sm">
+              The modern marketplace for quality pre-owned items. Find treasures, declutter responsibly, and connect with your community.
             </p>
-            <p className="text-gray-400 text-xs mt-1">
-              Empowering Africa through AI & Digital Innovation
-            </p>
+
+            <div className="space-y-4">
+              <a
+                href="tel:+2347045422815"
+                className="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group"
+              >
+                <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors">
+                  <Phone className="w-4 h-4" />
+                </div>
+                <span className="text-sm">+234 704 542 2815</span>
+              </a>
+
+              <a
+                href="mailto:support@tradehub.ng"
+                className="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group"
+              >
+                <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <span className="text-sm">support@tradehub.ng</span>
+              </a>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              {socialLinks.map((social) => {
+                const Icon = social.icon
+                return (
+                  <a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300"
+                    aria-label={social.name}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </a>
+                )
+              })}
+            </div>
           </div>
 
-          {/* Center Section: Contact Links */}
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="mailto:btehubsolutions@gmail.com"
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-700/40 border border-gray-600/50 hover:border-blue-500/50 hover:bg-gray-700/60 transition-all duration-200 group"
-              title="Email us"
-            >
-              <Mail className="w-4 h-4 text-blue-400 group-hover:text-blue-300" />
-              <span className="text-xs text-gray-300 group-hover:text-white hidden sm:inline">
-                Email
-              </span>
-            </a>
-
-            <a
-              href="tel:+2347045422815"
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-700/40 border border-gray-600/50 hover:border-blue-500/50 hover:bg-gray-700/60 transition-all duration-200 group"
-              title="Call us"
-            >
-              <Phone className="w-4 h-4 text-blue-400 group-hover:text-blue-300" />
-              <span className="text-xs text-gray-300 group-hover:text-white hidden sm:inline">
-                07045422815
-              </span>
-            </a>
-
-            <a
-              href="https://btehubsolutions.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-700/40 border border-gray-600/50 hover:border-blue-500/50 hover:bg-gray-700/60 transition-all duration-200 group"
-              title="Visit our website"
-            >
-              <Globe className="w-4 h-4 text-blue-400 group-hover:text-blue-300" />
-              <span className="text-xs text-gray-300 group-hover:text-white hidden sm:inline">
-                Website
-              </span>
-            </a>
+          {/* Links Columns */}
+          <div>
+            <h4 className="font-semibold text-gray-900 dark:text-white mb-6">Marketplace</h4>
+            <ul className="space-y-4">
+              {footerLinks.marketplace.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Right Section: Social Links */}
-          <div className="flex items-center gap-2">
-            {socialLinks.map((social) => {
-              const Icon = social.icon
-              return (
-                <a
-                  key={social.name}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-700/40 border border-gray-600/50 text-gray-400 hover:bg-blue-500 hover:text-white hover:border-blue-400 transition-all duration-200 hover:scale-105"
-                  aria-label={social.name}
-                  title={social.name}
-                >
-                  <Icon />
-                </a>
-              )
-            })}
+          <div>
+            <h4 className="font-semibold text-gray-900 dark:text-white mb-6">Selling</h4>
+            <ul className="space-y-4">
+              {footerLinks.selling.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-gray-900 dark:text-white mb-6">Support</h4>
+            <ul className="space-y-4">
+              {footerLinks.support.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-gray-900 dark:text-white mb-6">Company</h4>
+            <ul className="space-y-4">
+              {footerLinks.company.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-center md:text-left">
+            © 2025 TradeHub. Made with <span className="text-red-500">♥</span> in Nigeria.
+          </p>
+          <div className="flex items-center gap-6">
+            <Link href="/privacy" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              Privacy
+            </Link>
+            <Link href="/terms" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              Terms
+            </Link>
+            <Link href="/cookies" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              Cookies
+            </Link>
           </div>
         </div>
       </div>
