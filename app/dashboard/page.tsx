@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/AuthProvider'
-import { Listing, supabase } from '@/lib/supabase'
+import { Listing } from '@/lib/supabase'
 import {
   Edit2, Trash2, CheckCircle, Eye, Plus, Package, MapPin,
   TrendingUp, Banknote, ShoppingBag, Activity, Search, Filter,
@@ -53,15 +53,17 @@ export default function DashboardPage() {
 
     setLoading(true)
     try {
-      const { data, error } = await supabase
-        .from('listings')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+      const response = await fetch(`/api/listings?userId=${user.id}`, {
+        cache: 'no-store'
+      })
 
-      if (error) throw error
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}))
+        throw new Error(errorBody?.error || 'Failed to load your listings')
+      }
 
-      setListings(data || [])
+      const data: Listing[] = await response.json()
+      setListings(data)
     } catch (error: any) {
       console.error('Error fetching listings:', error)
       toast.error(error?.message || 'Failed to load your listings')
@@ -80,19 +82,20 @@ export default function DashboardPage() {
     if (!confirm('Are you sure you want to delete this listing?')) return
 
     try {
-      const { error } = await supabase
-        .from('listings')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', user?.id)
+      const response = await fetch(`/api/listings/${id}?userId=${user?.id}`, {
+        method: 'DELETE'
+      })
 
-      if (error) throw error
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}))
+        throw new Error(body?.error || 'Failed to delete listing')
+      }
 
       setListings(listings.filter(l => l.id !== id))
       toast.success('Listing deleted successfully')
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting listing:', error)
-      toast.error(error.message || 'Failed to delete listing')
+      toast.error(error instanceof Error ? error.message : 'Failed to delete listing')
     }
   }
 
@@ -100,22 +103,30 @@ export default function DashboardPage() {
     if (!confirm('Mark this item as sold?')) return
 
     try {
-      const { error } = await supabase
-        .from('listings')
-        .update({ status: 'sold' })
-        .eq('id', id)
-        .eq('user_id', user?.id)
+      const response = await fetch(`/api/listings/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user?.id,
+          data: { status: 'sold' }
+        })
+      })
 
-      if (error) throw error
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}))
+        throw new Error(body?.error || 'Failed to mark as sold')
+      }
 
       // Update local state using functional update to avoid stale state
       setListings(prevListings =>
         prevListings.map(l => l.id === id ? { ...l, status: 'sold' as const } : l)
       )
       toast.success('Item marked as sold')
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error marking as sold:', error)
-      toast.error(error.message || 'Failed to mark as sold')
+      toast.error(error instanceof Error ? error.message : 'Failed to mark as sold')
     }
   }
 
