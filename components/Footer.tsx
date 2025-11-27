@@ -1,6 +1,6 @@
 'use client'
 
-import { Mail, Phone, Facebook, Linkedin, Instagram, Package } from 'lucide-react'
+import { Mail, Phone, Facebook, Linkedin, Instagram, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Footer() {
@@ -52,12 +52,12 @@ export default function Footer() {
 
   const footerLinks = {
     marketplace: [
-      { name: 'Browse Items', href: '/browse' },
+      { name: 'Browse Items', href: '/listings' },
       { name: 'Categories', href: '/categories' },
-      { name: 'Community', href: '/community' },
+      { name: 'Community', href: 'https://whatsapp.com/channel/0029VbBTaETCsU9OMAeJuA45' },
     ],
     selling: [
-      { name: 'Sell Item', href: '/sell' },
+      { name: 'Sell Item', href: '/listings/new' },
       { name: 'Seller Guide', href: '/seller-guide' },
     ],
     support: [
@@ -78,15 +78,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 mb-16">
           {/* Brand Column */}
           <div className="lg:col-span-2 space-y-8">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white">
-                <Package className="w-6 h-6" />
+            <Link href="/" className="flex items-center space-x-2 group w-fit">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform shadow-lg shadow-blue-500/20">
+                <ShoppingBag className="w-6 h-6 text-white" strokeWidth={2.5} />
               </div>
-              <div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">TradeHub</h3>
-                <p className="text-xs text-blue-600 font-medium">The Students Marketplace</p>
-              </div>
-            </div>
+              <span className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                TradeHub
+              </span>
+            </Link>
 
             <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed max-w-sm">
               The modern marketplace for quality pre-owned items. Find treasures, declutter responsibly, and connect with your community.
@@ -141,6 +140,8 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
+                    target={link.href.startsWith('http') ? '_blank' : undefined}
+                    rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                     className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   >
                     {link.name}
@@ -157,6 +158,8 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
+                    target={link.href.startsWith('http') ? '_blank' : undefined}
+                    rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                     className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   >
                     {link.name}
@@ -173,6 +176,8 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
+                    target={link.href.startsWith('http') ? '_blank' : undefined}
+                    rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                     className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   >
                     {link.name}
@@ -189,6 +194,8 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
+                    target={link.href.startsWith('http') ? '_blank' : undefined}
+                    rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                     className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   >
                     {link.name}
@@ -201,9 +208,18 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center md:text-left">
-            © 2025 TradeHub. Made with <span className="text-red-500">♥</span> in Nigeria.
-          </p>
+          <div className="flex items-center gap-3">
+            <div className="relative w-24 h-8">
+              <img
+                src="/btehub-logo.jpg"
+                alt="BTEHub Solutions"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center md:text-left">
+              © 2025 TradeHub - A product of BTEHub Solutions.
+            </p>
+          </div>
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
               Privacy
