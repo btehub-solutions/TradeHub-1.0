@@ -302,6 +302,15 @@ export default function HomePage() {
                           </div>
                         )}
 
+                        {/* Sold Badge Overlay */}
+                        {listing.status === 'sold' && (
+                          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+                            <div className="bg-gray-900/90 text-white px-6 py-3 rounded-xl font-bold text-lg shadow-xl border-2 border-white/20">
+                              SOLD
+                            </div>
+                          </div>
+                        )}
+
                         {/* Category Badge */}
                         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg flex items-center space-x-1.5 shadow-soft">
                           <IconComponent className="w-3.5 h-3.5 text-blue-600" />
