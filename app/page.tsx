@@ -18,7 +18,50 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<'grid' | 'single'>('grid')
   const [currentPage, setCurrentPage] = useState(1)
+  const [currentAdIndex, setCurrentAdIndex] = useState(0)
   const itemsPerPage = 12
+
+  // Ad carousel data
+  const ads = useMemo(() => [
+    {
+      title: 'BTEHub Solutions',
+      subtitle: 'Transforming Business With Artificial Intelligence',
+      description: 'BTEHub specializes in AI Innovation to help businesses unlock the full potential of artificial intelligence with measurable results.',
+      link: 'https://btehubsolutions.vercel.app/',
+      linkText: 'Learn more about AI Solutions',
+      image: '/btehub-ad.jpg',
+      bgColor: 'bg-black',
+      borderColor: 'border-gray-800',
+      badgeBg: 'bg-blue-900/50',
+      badgeText: 'text-blue-400',
+      badgeBorder: 'border-blue-800',
+      pingColor: 'bg-blue-400',
+      dotColor: 'bg-blue-500',
+      subtitleColor: 'text-blue-400',
+      hoverColor: 'hover:text-blue-400',
+      gradientFrom: 'from-black/80',
+      gradientFromMd: 'md:from-black'
+    },
+    {
+      title: 'Olas Realtor & Consulting',
+      subtitle: 'Your Trusted Real Estate Partner',
+      description: 'Services include: Project Management, Agency/Sales of Property, Property Management, Valuation, Feasibility Appraisal, Architectural Drawings, and Title Documentation.',
+      link: 'https://olasrealtor.com',
+      linkText: 'Visit Website',
+      image: '/olas-realtor-ad.jpg',
+      bgColor: 'bg-green-950',
+      borderColor: 'border-green-900',
+      badgeBg: 'bg-green-900/50',
+      badgeText: 'text-green-400',
+      badgeBorder: 'border-green-800',
+      pingColor: 'bg-green-400',
+      dotColor: 'bg-green-500',
+      subtitleColor: 'text-orange-400',
+      hoverColor: 'hover:text-orange-400',
+      gradientFrom: 'from-green-950/80',
+      gradientFromMd: 'md:from-green-950'
+    }
+  ], [])
 
   const sortByDate = useCallback(
     (items: Listing[]) =>
@@ -91,6 +134,15 @@ export default function HomePage() {
   useEffect(() => {
     setCurrentPage(1)
   }, [search, selectedCategory])
+
+  // Auto-rotate ads every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentAdIndex((prev) => (prev + 1) % ads.length)
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [ads.length])
 
   // Get icon component dynamically
   const getIcon = (iconName: string) => {
@@ -363,78 +415,53 @@ export default function HomePage() {
           </>
         )}
 
-        {/* BTEHub Ad Section */}
+        {/* Ad Carousel Section */}
         <div className="mt-20 mb-16 animate-fade-in">
-          <div className="bg-black rounded-3xl overflow-hidden shadow-xl border border-gray-800">
+          <div className={`${ads[currentAdIndex].bgColor} rounded-3xl overflow-hidden shadow-xl border ${ads[currentAdIndex].borderColor} transition-all duration-500`}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               <div className="p-8 sm:p-12 flex flex-col justify-center">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/50 text-blue-400 text-xs font-medium w-fit mb-6 border border-blue-800">
+                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${ads[currentAdIndex].badgeBg} ${ads[currentAdIndex].badgeText} text-xs font-medium w-fit mb-6 border ${ads[currentAdIndex].badgeBorder}`}>
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${ads[currentAdIndex].pingColor} opacity-75`}></span>
+                    <span className={`relative inline-flex rounded-full h-2 w-2 ${ads[currentAdIndex].dotColor}`}></span>
                   </span>
                   Featured Partner
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-                  BTEHub Solutions
+                  {ads[currentAdIndex].title}
                 </h2>
-                <p className="text-blue-400 font-medium text-lg mb-6">
-                  Transforming Business With Artificial Intelligence
-                </p>
-                <p className="text-gray-400 leading-relaxed mb-8">
-                  BTEHub specializes in AI Innovation to help businesses unlock the full potential of artificial intelligence with measurable results.
-                </p>
-                <a href="https://btehubsolutions.vercel.app/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-white font-semibold hover:text-blue-400 transition-colors group">
-                  Learn more about AI Solutions
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                </a>
-              </div>
-              <div className="relative h-64 md:h-auto bg-black flex items-center justify-center">
-                <img
-                  src="/btehub-ad.jpg"
-                  alt="BTEHub Solutions AI"
-                  className="absolute inset-0 w-full h-full object-contain"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent md:bg-gradient-to-r md:from-black md:via-transparent md:to-transparent pointer-events-none" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Olas Realtor Ad Section */}
-        <div className="mb-16 animate-fade-in">
-          <div className="bg-green-950 rounded-3xl overflow-hidden shadow-xl border border-green-900">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-              <div className="p-8 sm:p-12 flex flex-col justify-center">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-900/50 text-green-400 text-xs font-medium w-fit mb-6 border border-green-800">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                  </span>
-                  Featured Partner
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-                  Olas Realtor & Consulting
-                </h2>
-                <p className="text-orange-400 font-medium text-lg mb-6">
-                  Your Trusted Real Estate Partner
+                <p className={`${ads[currentAdIndex].subtitleColor} font-medium text-lg mb-6`}>
+                  {ads[currentAdIndex].subtitle}
                 </p>
                 <p className="text-gray-300 leading-relaxed mb-8">
-                  Services include: Project Management, Agency/Sales of Property, Property Management, Valuation, Feasibility Appraisal, Architectural Drawings, and Title Documentation.
+                  {ads[currentAdIndex].description}
                 </p>
-                <a href="https://olasrealtor.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-white font-semibold hover:text-orange-400 transition-colors group">
-                  Visit Website
+                <a href={ads[currentAdIndex].link} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center text-white font-semibold ${ads[currentAdIndex].hoverColor} transition-colors group`}>
+                  {ads[currentAdIndex].linkText}
                   <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </a>
               </div>
-              <div className="relative h-64 md:h-auto bg-green-950 flex items-center justify-center">
+              <div className={`relative h-64 md:h-auto ${ads[currentAdIndex].bgColor} flex items-center justify-center`}>
                 <img
-                  src="/olas-realtor-ad.jpg"
-                  alt="Olas Realtor & Consulting"
-                  className="absolute inset-0 w-full h-full object-contain"
+                  src={ads[currentAdIndex].image}
+                  alt={ads[currentAdIndex].title}
+                  className="absolute inset-0 w-full h-full object-contain transition-opacity duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-green-950/80 via-transparent to-transparent md:bg-gradient-to-r md:from-green-950 md:via-transparent md:to-transparent pointer-events-none" />
+                <div className={`absolute inset-0 bg-gradient-to-r ${ads[currentAdIndex].gradientFrom} via-transparent to-transparent ${ads[currentAdIndex].gradientFromMd} md:via-transparent md:to-transparent pointer-events-none`} />
               </div>
+            </div>
+
+            {/* Carousel Indicators */}
+            <div className="flex justify-center gap-2 pb-6">
+              {ads.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentAdIndex(index)}
+                  className={`h-2 rounded-full transition-all duration-300 ${index === currentAdIndex ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/60'
+                    }`}
+                  aria-label={`Go to ad ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>
