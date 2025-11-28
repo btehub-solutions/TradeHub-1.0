@@ -357,15 +357,17 @@ export default function DashboardPage() {
                           <CheckCircle className="w-4 h-4" />
                           Mark as Sold
                         </button>
-                        <button
-                          onClick={() => handleDelete(listing.id)}
-                          className="flex items-center justify-center gap-2 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-red-500 hover:text-red-500 transition-colors text-sm"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          Delete
-                        </button>
                       </>
                     )}
+
+                    {/* Delete button available for all items */}
+                    <button
+                      onClick={() => handleDelete(listing.id)}
+                      className="flex items-center justify-center gap-2 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-red-500 hover:text-red-500 transition-colors text-sm col-span-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </button>
                   </div>
                 </div>
               </div>
