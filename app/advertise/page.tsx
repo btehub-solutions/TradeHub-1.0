@@ -29,11 +29,13 @@ export default function AdvertisePage() {
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <a
-                            href="mailto:ads@tradehub.ng"
+                            href="https://wa.me/2347045422815"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="inline-flex items-center justify-center px-8 py-4 rounded-xl bg-white text-blue-600 font-bold text-lg hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl hover:scale-105"
                         >
                             <Mail className="w-5 h-5 mr-2" />
-                            Contact Ad Team
+                            Chat on WhatsApp
                         </a>
                     </div>
                 </div>
@@ -84,10 +86,12 @@ export default function AdvertisePage() {
                         </p>
 
                         <a
-                            href="mailto:ads@tradehub.ng"
+                            href="https://wa.me/2347045422815"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:shadow-lg hover:scale-105 transition-all"
                         >
-                            Email Us Now
+                            Chat on WhatsApp
                             <ArrowRight className="w-5 h-5 ml-2" />
                         </a>
                     </div>
