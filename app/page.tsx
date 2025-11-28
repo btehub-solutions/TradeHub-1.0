@@ -401,6 +401,44 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* Olas Realtor Ad Section */}
+        <div className="mb-16 animate-fade-in">
+          <div className="bg-green-950 rounded-3xl overflow-hidden shadow-xl border border-green-900">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+              <div className="p-8 sm:p-12 flex flex-col justify-center">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-900/50 text-green-400 text-xs font-medium w-fit mb-6 border border-green-800">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                  </span>
+                  Featured Partner
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                  Olas Realtor & Consulting
+                </h2>
+                <p className="text-orange-400 font-medium text-lg mb-6">
+                  Your Trusted Real Estate Partner
+                </p>
+                <p className="text-gray-300 leading-relaxed mb-8">
+                  Services include: Project Management, Agency/Sales of Property, Property Management, Valuation, Feasibility Appraisal, Architectural Drawings, and Title Documentation.
+                </p>
+                <a href="https://olasrealtor.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-white font-semibold hover:text-orange-400 transition-colors group">
+                  Visit Website
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </a>
+              </div>
+              <div className="relative h-64 md:h-auto bg-green-950 flex items-center justify-center">
+                <img
+                  src="/olas-realtor-ad.jpg"
+                  alt="Olas Realtor & Consulting"
+                  className="absolute inset-0 w-full h-full object-contain"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-green-950/80 via-transparent to-transparent md:bg-gradient-to-r md:from-green-950 md:via-transparent md:to-transparent pointer-events-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Why We Built This Platform Section */}
         <div className="mb-16 animate-fade-in">
           <div className="text-center mb-10">
