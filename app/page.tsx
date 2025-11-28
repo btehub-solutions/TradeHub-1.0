@@ -417,7 +417,7 @@ export default function HomePage() {
 
         {/* Ad Carousel Section */}
         <div className="mt-20 mb-16 animate-fade-in">
-          <div className={`${ads[currentAdIndex].bgColor} rounded-3xl overflow-hidden shadow-xl border ${ads[currentAdIndex].borderColor} transition-all duration-500`}>
+          <div className={`${ads[currentAdIndex].bgColor} rounded-3xl overflow-hidden shadow-xl border ${ads[currentAdIndex].borderColor} transition-all duration-500 relative`}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               <div className="p-8 sm:p-12 flex flex-col justify-center">
                 <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${ads[currentAdIndex].badgeBg} ${ads[currentAdIndex].badgeText} text-xs font-medium w-fit mb-6 border ${ads[currentAdIndex].badgeBorder}`}>
@@ -450,6 +450,22 @@ export default function HomePage() {
                 <div className={`absolute inset-0 bg-gradient-to-r ${ads[currentAdIndex].gradientFrom} via-transparent to-transparent ${ads[currentAdIndex].gradientFromMd} md:via-transparent md:to-transparent pointer-events-none`} />
               </div>
             </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={() => setCurrentAdIndex((prev) => (prev - 1 + ads.length) % ads.length)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-all hover:scale-110 z-10"
+              aria-label="Previous ad"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => setCurrentAdIndex((prev) => (prev + 1) % ads.length)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-all hover:scale-110 z-10"
+              aria-label="Next ad"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
 
             {/* Carousel Indicators */}
             <div className="flex justify-center gap-2 pb-6">
