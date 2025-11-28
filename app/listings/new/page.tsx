@@ -85,6 +85,11 @@ export default function NewListingPage() {
       return
     }
 
+    if (imageFiles.length === 0) {
+      toast.error('Please upload at least one image of your item')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -321,7 +326,7 @@ export default function NewListingPage() {
             {/* Image Upload */}
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
-                Item Photo
+                Item Photo *
               </label>
 
               {/* Image Previews */}
@@ -372,7 +377,7 @@ export default function NewListingPage() {
 
               <p className="text-xs text-gray-500 dark:text-gray-400 flex items-start mt-2">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 mt-1.5 mr-2"></span>
-                Add up to 5 photos (optional, max 5MB each). First image will be the main photo.
+                Add up to 5 photos (required, max 5MB each). First image will be the main photo.
               </p>
             </div>
 

@@ -451,33 +451,35 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Navigation Arrows */}
-            <button
-              onClick={() => setCurrentAdIndex((prev) => (prev - 1 + ads.length) % ads.length)}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-all hover:scale-110 z-10"
-              aria-label="Previous ad"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => setCurrentAdIndex((prev) => (prev + 1) % ads.length)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-all hover:scale-110 z-10"
-              aria-label="Next ad"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
+            {/* Carousel Controls */}
+            <div className="flex items-center justify-between px-6 pb-6 pt-2">
+              <button
+                onClick={() => setCurrentAdIndex((prev) => (prev - 1 + ads.length) % ads.length)}
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-2 rounded-full transition-all hover:scale-110"
+                aria-label="Previous ad"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
 
-            {/* Carousel Indicators */}
-            <div className="flex justify-center gap-2 pb-6">
-              {ads.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentAdIndex(index)}
-                  className={`h-2 rounded-full transition-all duration-300 ${index === currentAdIndex ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/60'
-                    }`}
-                  aria-label={`Go to ad ${index + 1}`}
-                />
-              ))}
+              <div className="flex justify-center gap-2">
+                {ads.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentAdIndex(index)}
+                    className={`h-2 rounded-full transition-all duration-300 ${index === currentAdIndex ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/60'
+                      }`}
+                    aria-label={`Go to ad ${index + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={() => setCurrentAdIndex((prev) => (prev + 1) % ads.length)}
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-2 rounded-full transition-all hover:scale-110"
+                aria-label="Next ad"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
             </div>
           </div>
         </div>
