@@ -7,49 +7,41 @@ type Message = {
 
 // Knowledge base for TradeHub
 const KNOWLEDGE_BASE = {
-    selling: {
-        keywords: ['sell', 'post', 'listing', 'list', 'upload', 'create listing', 'add item'],
-        response: 'To sell an item on TradeHub:\n1. Sign in to your account\n2. Click "Post Item" button\n3. Fill in item details (title, description, price, location)\n4. Upload photos\n5. Click "Post Item" to publish\n\nIt\'s completely free!'
+    problem_solution: {
+        keywords: ['problem', 'solve', 'solution', 'why tradehub', 'what is tradehub', 'about'],
+        response: 'TradeHub solves the problem of finding trustworthy local buyers and sellers. We provide a secure, transparent marketplace with verified users and no hidden fees, making it easy to declutter or find great deals in your community.'
+    },
+    operation_area: {
+        keywords: ['operate', 'location', 'where', 'area', 'city', 'country', 'region'],
+        response: 'TradeHub currently operates in Nigeria. We connect local buyers and sellers within their communities, making transactions faster and more personal.'
     },
     buying: {
-        keywords: ['buy', 'purchase', 'get', 'find', 'search', 'browse'],
-        response: 'To buy an item:\n1. Browse listings on the home page\n2. Use search or filter by category\n3. Click on an item to view details\n4. Contact the seller using their phone number\n5. Arrange payment and pickup directly\n\nTradeHub connects you with sellers - you handle the transaction directly!'
+        keywords: ['buy', 'purchase', 'get', 'find', 'search', 'browse', 'how to buy', 'buying work'],
+        response: 'Buying on TradeHub is simple:\n1. Browse listings or search for items\n2. Click on an item to view details\n3. Contact the seller via phone or WhatsApp\n4. Meet in a safe public place to inspect and pay\n\nNo middlemen, just direct local trading!'
+    },
+    delivery: {
+        keywords: ['delivery', 'shipping', 'ship', 'send', 'courier', 'logistics'],
+        response: 'TradeHub is designed for local face-to-face transactions. We do not offer official delivery services. However, you can arrange delivery directly with the seller if you both agree on a safe method.'
+    },
+    selling: {
+        keywords: ['sell', 'post', 'listing', 'list', 'upload', 'create listing', 'add item', 'free'],
+        response: 'It is completely FREE to list items on TradeHub! Just sign in, click "Post Item", add your photos and details, and you\'re ready to sell. No listing fees and no commissions.'
     },
     contact: {
-        keywords: ['contact', 'reach', 'message', 'call', 'phone', 'whatsapp', 'talk to seller'],
-        response: 'To contact a seller, click on any listing to view the full details. You\'ll find the seller\'s phone number there. You can call or WhatsApp them directly to arrange the purchase.'
+        keywords: ['contact', 'reach', 'message', 'call', 'phone', 'whatsapp', 'talk to seller', 'seller info'],
+        response: 'To contact a seller, simply click on their listing to view the full details. You\'ll find the seller\'s phone number or WhatsApp contact there. You can reach out directly to ask questions or arrange a meeting.'
     },
-    account: {
-        keywords: ['account', 'profile', 'register', 'signup', 'sign up', 'signin', 'sign in', 'login', 'log in'],
-        response: 'To create an account:\n1. Click "Sign Up" in the header\n2. Enter your email and password\n3. You\'ll be signed in immediately\n\nTo sign in: Click "Sign In" and enter your credentials.\n\nTo manage your account, click "Dashboard" after signing in.'
-    },
-    dashboard: {
-        keywords: ['dashboard', 'my listings', 'my items', 'manage', 'edit listing', 'delete listing'],
-        response: 'Your dashboard shows all your listings. You can edit or delete them from there. Access it by clicking "Dashboard" in the header after signing in.'
-    },
-    categories: {
-        keywords: ['category', 'categories', 'type', 'section', 'electronics', 'vehicles', 'real estate', 'furniture', 'fashion'],
-        response: 'TradeHub has these categories:\n• Electronics (phones, laptops, gadgets)\n• Vehicles (cars, motorcycles)\n• Real Estate (houses, apartments)\n• Furniture (home & office)\n• Fashion (clothing, shoes)\n• Other (everything else)\n\nYou can filter by category on the home page.'
-    },
-    pricing: {
-        keywords: ['price', 'cost', 'fee', 'charge', 'free', 'pay', 'money', 'commission'],
-        response: 'TradeHub is completely FREE! No listing fees, no commissions, no hidden charges. Post as many items as you want at no cost.'
-    },
-    payment: {
-        keywords: ['payment', 'paying', 'transaction', 'escrow', 'pay seller'],
-        response: 'TradeHub doesn\'t handle payments. Buyers and sellers arrange payment directly. We recommend:\n• Meet in public places\n• Inspect items before paying\n• Use secure payment methods\n• Trust your instincts'
+    fees: {
+        keywords: ['fee', 'charge', 'cost', 'commission', 'price', 'payment', 'paid'],
+        response: 'TradeHub charges ZERO fees! \n• Free to sign up\n• Free to list items\n• No commission on sales\n\nKeep 100% of what you make.'
     },
     safety: {
-        keywords: ['safe', 'safety', 'secure', 'scam', 'fraud', 'trust', 'meet', 'meeting'],
-        response: 'Safety tips:\n• Meet in public, well-lit places\n• Bring a friend if possible\n• Inspect items thoroughly before paying\n• Trust your instincts\n• Report suspicious activity to support@tradehub.com'
+        keywords: ['safe', 'safety', 'secure', 'scam', 'fraud', 'trust', 'meet', 'meeting', 'legit'],
+        response: 'Yes, TradeHub is safe to use! We prioritize your safety by:\n• Verifying users\n• Encouraging public meetups\n• Providing safety tips\n\nAlways meet in public places, inspect items before paying, and never send money in advance.'
     },
     photos: {
         keywords: ['photo', 'image', 'picture', 'upload photo', 'add photo'],
-        response: 'When creating a listing, you can upload photos of your item. Good photos help sell faster! Make sure to:\n• Take clear, well-lit photos\n• Show the item from multiple angles\n• Include any defects or wear\n• Upload during the listing creation process'
-    },
-    location: {
-        keywords: ['location', 'where', 'area', 'city', 'delivery', 'shipping'],
-        response: 'When posting a listing, you\'ll specify your location. Buyers can see where the item is located. TradeHub is for local transactions - buyers and sellers meet in person. We don\'t offer shipping services.'
+        response: 'Great photos help sell faster! When posting:\n• Use good lighting\n• Show multiple angles\n• Highlight key features\n• Be honest about condition'
     }
 }
 

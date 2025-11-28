@@ -67,6 +67,7 @@ export default function Footer() {
     ],
     company: [
       { name: 'About Us', href: '/about' },
+      { name: 'Advertise with Us', href: '/advertise' },
       { name: 'Privacy Policy', href: '/privacy' },
       { name: 'Terms of Service', href: '/terms' },
     ],
