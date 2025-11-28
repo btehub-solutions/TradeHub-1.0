@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Search, MapPin, TrendingUp, Images, AlertCircle, Lightbulb, Grid3x3, List, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, MapPin, TrendingUp, Images, AlertCircle, Lightbulb, Grid3x3, List, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import { Listing, CATEGORIES, CATEGORY_ICONS } from '@/lib/supabase'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -363,8 +363,46 @@ export default function HomePage() {
           </>
         )}
 
-        {/* Why We Built This Platform Section */}
+        {/* BTEHub Ad Section */}
         <div className="mt-20 mb-16 animate-fade-in">
+          <div className="bg-black rounded-3xl overflow-hidden shadow-xl border border-gray-800">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+              <div className="p-8 sm:p-12 flex flex-col justify-center">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/50 text-blue-400 text-xs font-medium w-fit mb-6 border border-blue-800">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                  </span>
+                  Featured Partner
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                  BTEHub Solutions
+                </h2>
+                <p className="text-blue-400 font-medium text-lg mb-6">
+                  Transforming Business With Artificial Intelligence
+                </p>
+                <p className="text-gray-400 leading-relaxed mb-8">
+                  BTEHub specializes in AI Innovation to help businesses unlock the full potential of artificial intelligence with measurable results.
+                </p>
+                <a href="https://btehubsolutions.vercel.app/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-white font-semibold hover:text-blue-400 transition-colors group">
+                  Learn more about AI Solutions
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </a>
+              </div>
+              <div className="relative h-64 md:h-auto bg-black flex items-center justify-center">
+                <img
+                  src="/btehub-ad.jpg"
+                  alt="BTEHub Solutions AI"
+                  className="absolute inset-0 w-full h-full object-contain"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent md:bg-gradient-to-r md:from-black md:via-transparent md:to-transparent pointer-events-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Why We Built This Platform Section */}
+        <div className="mb-16 animate-fade-in">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3">
               Why We Built This Platform
