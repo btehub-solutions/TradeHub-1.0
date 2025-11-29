@@ -15,8 +15,13 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const { user, loading, signOut } = useAuth()
-  const { theme, toggleTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const router = useRouter()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,6 +64,10 @@ export default function Header() {
     return nameParts[0][0].toUpperCase()
   }
 
+  if (!mounted) {
+    return null
+  }
+
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
@@ -94,7 +103,7 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-3 flex-shrink-0">
             {/* Theme Toggle */}
             <button
-              onClick={toggleTheme}
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
               aria-label="Toggle theme"
             >
@@ -191,7 +200,7 @@ export default function Header() {
             </Link>
 
             <button
-              onClick={toggleTheme}
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="w-full flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors"
             >
               <div className="flex items-center space-x-3">
