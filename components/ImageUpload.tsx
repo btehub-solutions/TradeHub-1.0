@@ -97,7 +97,7 @@ export default function ImageUpload({
         if (acceptedFiles.length > 0) {
             uploadImages(acceptedFiles)
         }
-    }, [images, userId])
+    }, [uploadImages])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,

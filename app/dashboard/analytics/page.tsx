@@ -34,12 +34,6 @@ export default function AnalyticsPage() {
         }
     }, [user, authLoading, router])
 
-    useEffect(() => {
-        if (user) {
-            fetchAnalytics()
-        }
-    }, [user, timeRange])
-
     const fetchAnalytics = useCallback(async () => {
         try {
             setLoading(true)
@@ -67,6 +61,12 @@ export default function AnalyticsPage() {
             setLoading(false)
         }
     }, [user, timeRange])
+
+    useEffect(() => {
+        if (user) {
+            fetchAnalytics()
+        }
+    }, [user, timeRange, fetchAnalytics])
 
     if (authLoading || !user) {
         return (
