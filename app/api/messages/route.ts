@@ -115,46 +115,26 @@ export async function POST(request: NextRequest) {
 
         const supabase = createClient()
 
-        // Get or create conversation using helper function
-        const { data: conversationData, error: convError } = await supabase
-            .rpc('get_or_create_conversation', {
+        // Use the helper function to create conversation and send first message
+        const { data: conversationId, error: sendError } = await supabase
+            .rpc('send_first_message', {
                 p_listing_id: listingId,
                 p_buyer_id: buyerId,
-                p_seller_id: sellerId
+                p_seller_id: sellerId,
+                p_sender_id: senderId,
+                p_content: content.trim()
             })
 
-        if (convError) {
-            console.error('Error creating conversation:', convError)
+        if (sendError) {
+            console.error('Error sending message:', sendError)
             return NextResponse.json(
-                { error: convError.message },
-                { status: 500 }
-            )
-        }
-
-        const conversationId = conversationData
-
-        // Insert message
-        const { data: message, error: msgError } = await supabase
-            .from('messages')
-            .insert({
-                conversation_id: conversationId,
-                sender_id: senderId,
-                content: content.trim()
-            })
-            .select()
-            .single()
-
-        if (msgError) {
-            console.error('Error sending message:', msgError)
-            return NextResponse.json(
-                { error: msgError.message },
+                { error: sendError.message },
                 { status: 500 }
             )
         }
 
         return NextResponse.json({
             success: true,
-            message,
             conversationId
         })
 

@@ -1,14 +1,14 @@
--- Fix for RLS Policy Error
--- Run this in Supabase SQL Editor to fix the conversation creation issue
+-- Complete Fix for Messaging RLS Issues
+-- Run this in Supabase SQL Editor
 
--- Drop and recreate the function with SECURITY DEFINER
+-- 1. Update the get_or_create_conversation function with SECURITY DEFINER
 CREATE OR REPLACE FUNCTION get_or_create_conversation(
   p_listing_id UUID,
   p_buyer_id UUID,
   p_seller_id UUID
 )
 RETURNS UUID 
-SECURITY DEFINER  -- This allows the function to bypass RLS
+SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
@@ -28,6 +28,55 @@ BEGIN
     RETURNING id INTO v_conversation_id;
   END IF;
 
+  RETURN v_conversation_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 2. Fix the messages RLS policy to be less restrictive for new conversations
+DROP POLICY IF EXISTS "Users can send messages" ON messages;
+CREATE POLICY "Users can send messages" ON messages
+  FOR INSERT
+  WITH CHECK (
+    auth.uid() = sender_id
+    AND (
+      -- Allow if conversation exists and user is part of it
+      EXISTS (
+        SELECT 1 FROM conversations
+        WHERE id = messages.conversation_id
+        AND (buyer_id = auth.uid() OR seller_id = auth.uid())
+      )
+      -- OR if this is a new conversation being created
+      OR NOT EXISTS (
+        SELECT 1 FROM messages
+        WHERE conversation_id = messages.conversation_id
+      )
+    )
+  );
+
+-- 3. Alternative: Create a helper function to send the first message
+CREATE OR REPLACE FUNCTION send_first_message(
+  p_listing_id UUID,
+  p_buyer_id UUID,
+  p_seller_id UUID,
+  p_sender_id UUID,
+  p_content TEXT
+)
+RETURNS UUID
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_conversation_id UUID;
+  v_message_id UUID;
+BEGIN
+  -- Get or create conversation
+  v_conversation_id := get_or_create_conversation(p_listing_id, p_buyer_id, p_seller_id);
+  
+  -- Insert message
+  INSERT INTO messages (conversation_id, sender_id, content)
+  VALUES (v_conversation_id, p_sender_id, p_content)
+  RETURNING id INTO v_message_id;
+  
   RETURN v_conversation_id;
 END;
 $$ LANGUAGE plpgsql;
