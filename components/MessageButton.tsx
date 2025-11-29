@@ -51,8 +51,9 @@ export default function MessageButton({ listingId, sellerId, sellerName }: Messa
                 throw new Error(data.error || 'Failed to start conversation')
             }
 
-            // Redirect to conversation
-            router.push(`/messages/${data.conversationId}`)
+            // Redirect to conversation with seller info in URL
+            const url = `/messages/${data.conversationId}?seller=${encodeURIComponent(sellerName)}&listing=${encodeURIComponent('Item')}&listingId=${listingId}`
+            router.push(url)
             toast.success(`Opening chat with ${sellerName}`)
 
         } catch (error: any) {

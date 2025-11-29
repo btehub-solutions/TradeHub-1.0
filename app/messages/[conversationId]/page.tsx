@@ -2,35 +2,36 @@
 
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/lib/AuthProvider'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import ChatWindow from '@/components/ChatWindow'
-
-interface Conversation {
-    id: string
-    listing_id: string
-    buyer_id: string
-    seller_id: string
-    listing: {
-        id: string
-        title: string
-    }
-}
 
 export default function ConversationPage({ params }: { params: Promise<{ conversationId: string }> }) {
     const { user, loading: authLoading } = useAuth()
     const router = useRouter()
+    const searchParams = useSearchParams()
     const [conversationId, setConversationId] = useState<string>('')
-    const [conversation, setConversation] = useState<Conversation | null>(null)
-    const [loading, setLoading] = useState(true)
+    const [otherUserName, setOtherUserName] = useState<string>('User')
+    const [otherUserId, setOtherUserId] = useState<string>('')
+    const [listingTitle, setListingTitle] = useState<string>('Item')
+    const [listingId, setListingId] = useState<string>('')
 
     // Unwrap params
     useEffect(() => {
         const init = async () => {
             const resolvedParams = await params
             setConversationId(resolvedParams.conversationId)
+
+            // Get data from URL params if available
+            const seller = searchParams.get('seller')
+            const listing = searchParams.get('listing')
+            const listingIdParam = searchParams.get('listingId')
+
+            if (seller) setOtherUserName(seller)
+            if (listing) setListingTitle(listing)
+            if (listingIdParam) setListingId(listingIdParam)
         }
         init()
-    }, [params])
+    }, [params, searchParams])
 
     useEffect(() => {
         if (!authLoading && !user) {
@@ -38,65 +39,7 @@ export default function ConversationPage({ params }: { params: Promise<{ convers
         }
     }, [user, authLoading, router])
 
-    useEffect(() => {
-        if (conversationId && user) {
-            fetchConversation()
-        }
-    }, [conversationId, user])
-
-    const fetchConversation = async () => {
-        try {
-            const response = await fetch(`/api/messages?userId=${user?.id}`)
-            if (response.ok) {
-                const conversations = await response.json()
-                const conv = conversations.find((c: Conversation) => c.id === conversationId)
-
-                if (conv) {
-                    setConversation(conv)
-                } else {
-                    // Conversation might be new, fetch it directly
-                    const { createClient } = await import('@/lib/supabase')
-                    const supabase = createClient()
-
-                    // Fetch conversation first
-                    const { data: convData, error: convError } = await supabase
-                        .from('conversations')
-                        .select('*')
-                        .eq('id', conversationId)
-                        .single()
-
-                    if (convError || !convData) {
-                        console.error('Conversation not found:', convError)
-                        router.push('/messages')
-                        return
-                    }
-
-                    // Then fetch listing separately
-                    const { data: listingData } = await supabase
-                        .from('listings')
-                        .select('id, title')
-                        .eq('id', convData.listing_id)
-                        .single()
-
-                    if (listingData) {
-                        setConversation({
-                            ...convData,
-                            listing: listingData
-                        } as any)
-                    } else {
-                        router.push('/messages')
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching conversation:', error)
-            router.push('/messages')
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    if (authLoading || loading) {
+    if (authLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent" />
@@ -104,21 +47,21 @@ export default function ConversationPage({ params }: { params: Promise<{ convers
         )
     }
 
-    if (!user || !conversation) {
+    if (!user || !conversationId) {
         return null
     }
 
-    const otherUserId = conversation.buyer_id === user.id ? conversation.seller_id : conversation.buyer_id
-    const otherUserName = conversation.buyer_id === user.id ? 'Seller' : 'Buyer'
+    // Determine other user ID from conversation (buyer or seller)
+    const finalOtherUserId = otherUserId || user.id // Fallback
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8">
             <ChatWindow
                 conversationId={conversationId}
                 otherUserName={otherUserName}
-                otherUserId={otherUserId}
-                listingTitle={conversation.listing.title}
-                listingId={conversation.listing_id}
+                otherUserId={finalOtherUserId}
+                listingTitle={listingTitle}
+                listingId={listingId}
             />
         </div>
     )
