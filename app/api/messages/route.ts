@@ -49,6 +49,8 @@ export async function GET(request: NextRequest) {
             )
         }
 
+        console.log('Fetched conversations:', data?.length || 0)
+
         // For each conversation, get the last message and other user info
         const conversationsWithDetails = await Promise.all(
             (data || []).map(async (conv) => {
@@ -59,7 +61,7 @@ export async function GET(request: NextRequest) {
                     .eq('conversation_id', conv.id)
                     .order('created_at', { ascending: false })
                     .limit(1)
-                    .single()
+                    .maybeSingle()
 
                 // Get unread count
                 const { count: unreadCount } = await supabase
@@ -77,7 +79,7 @@ export async function GET(request: NextRequest) {
                     .from('auth.users')
                     .select('raw_user_meta_data')
                     .eq('id', otherUserId)
-                    .single()
+                    .maybeSingle()
 
                 return {
                     ...conv,
@@ -89,6 +91,7 @@ export async function GET(request: NextRequest) {
             })
         )
 
+        console.log('Returning conversations with details:', conversationsWithDetails.length)
         return NextResponse.json(conversationsWithDetails)
 
     } catch (error: any) {
