@@ -117,20 +117,17 @@ export default function ChatWindow({
         setSending(true)
 
         try {
-            const response = await fetch('/api/messages', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    listingId,
-                    buyerId: user.id,
-                    sellerId: otherUserId,
-                    senderId: user.id,
+            // Insert message directly using Supabase
+            const { error } = await supabase
+                .from('messages')
+                .insert({
+                    conversation_id: conversationId,
+                    sender_id: user.id,
                     content: newMessage.trim()
                 })
-            })
 
-            if (!response.ok) {
-                throw new Error('Failed to send message')
+            if (error) {
+                throw new Error(error.message)
             }
 
             setNewMessage('')
@@ -186,8 +183,8 @@ export default function ChatWindow({
                             >
                                 <div
                                     className={`max-w-[70%] rounded-2xl px-4 py-2 ${isOwn
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
                                         }`}
                                 >
                                     <p className="break-words">{msg.content}</p>
