@@ -34,14 +34,58 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get('userId')
+    const category = searchParams.get('category')
+    const minPrice = searchParams.get('minPrice')
+    const maxPrice = searchParams.get('maxPrice')
+    const location = searchParams.get('location')
+    const search = searchParams.get('search')
+    const sortBy = searchParams.get('sortBy') || 'created_at'
+    const sortOrder = searchParams.get('sortOrder') || 'desc'
 
     let query = supabase
       .from('listings')
       .select('*')
-      .order('created_at', { ascending: false })
 
+    // Filter by user ID (for dashboard)
     if (userId) {
       query = query.eq('user_id', userId)
+    } else {
+      // Only show available listings for public view
+      query = query.eq('status', 'available')
+    }
+
+    // Filter by category
+    if (category && category !== 'All') {
+      query = query.eq('category', category)
+    }
+
+    // Filter by price range
+    if (minPrice) {
+      query = query.gte('price', parseFloat(minPrice))
+    }
+    if (maxPrice) {
+      query = query.lte('price', parseFloat(maxPrice))
+    }
+
+    // Filter by location (case-insensitive partial match)
+    if (location) {
+      query = query.ilike('location', `%${location}%`)
+    }
+
+    // Search in title and description
+    if (search) {
+      query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`)
+    }
+
+    // Apply sorting
+    const ascending = sortOrder.toLowerCase() === 'asc'
+    if (sortBy === 'price') {
+      query = query.order('price', { ascending })
+    } else if (sortBy === 'created_at') {
+      query = query.order('created_at', { ascending })
+    } else {
+      // Default to created_at descending
+      query = query.order('created_at', { ascending: false })
     }
 
     const { data, error } = await query

@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react'
 import { Listing } from '@/lib/supabase'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ChevronLeft, ChevronRight, MapPin, MessageCircle, User, Phone, Package, Shield, Info } from 'lucide-react'
+import { MapPin, MessageCircle, User, Phone, Package, Shield, Info } from 'lucide-react'
+import ImageCarousel from '@/components/ImageCarousel'
 
 export default function ListingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [listingId, setListingId] = useState<string>('')
   const [listing, setListing] = useState<Listing | null>(null)
   const [loading, setLoading] = useState(true)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
   // Unwrap params
@@ -87,14 +87,6 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
       ? [listing.image_url]
       : []
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % displayImages.length)
-  }
-
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + displayImages.length) % displayImages.length)
-  }
-
   return (
     <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
       <Link
@@ -106,58 +98,9 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
 
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900/50 overflow-hidden border dark:border-slate-700/50">
         {/* Image Carousel */}
-        {displayImages.length > 0 ? (
-          <div className="relative">
-            <img
-              src={displayImages[currentImageIndex]}
-              alt={`${listing.title} - Image ${currentImageIndex + 1}`}
-              className="w-full h-96 object-contain bg-gray-100 dark:bg-slate-700"
-            />
-
-            {/* Navigation Arrows */}
-            {displayImages.length > 1 && (
-              <>
-                <button
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
-                >
-                  <ChevronRight className="w-6 h-6" />
-                </button>
-
-                {/* Image Counter */}
-                <div className="absolute bottom-4 right-4 px-3 py-1.5 bg-black/70 text-white text-sm rounded-full">
-                  {currentImageIndex + 1} / {displayImages.length}
-                </div>
-              </>
-            )}
-
-            {/* Thumbnail Navigation */}
-            {displayImages.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                {displayImages.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-all ${index === currentImageIndex
-                      ? 'bg-white w-8'
-                      : 'bg-white/50 hover:bg-white/75'
-                      }`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="w-full h-96 bg-gray-200 dark:bg-slate-700 flex items-center justify-center">
-            <span className="text-gray-400 dark:text-gray-500 text-xl">No image available</span>
-          </div>
-        )}
+        <div className="p-4 sm:p-6">
+          <ImageCarousel images={displayImages} title={listing.title} />
+        </div>
 
         <div className="p-4 sm:p-6">
           {/* Category Badge */}

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, MapPin, TrendingUp, Images, AlertCircle, Lightbulb, Grid3x3, List, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import { Listing, CATEGORIES, CATEGORY_ICONS } from '@/lib/supabase'
@@ -9,17 +10,38 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { toast } from 'react-hot-toast'
 import FeatureCard from '@/components/FeatureCard'
 import HeroHeader from '@/components/HeroHeader'
+import FilterPanel, { FilterOptions } from '@/components/FilterPanel'
 
 export default function HomePage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [listings, setListings] = useState<Listing[]>([])
-  const [search, setSearch] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [search, setSearch] = useState(searchParams.get('search') || '')
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'All')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<'grid' | 'single'>('grid')
   const [currentPage, setCurrentPage] = useState(1)
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
   const itemsPerPage = 12
+
+  // Price range state (will be calculated from listings)
+  const [priceMin, setPriceMin] = useState(0)
+  const [priceMax, setPriceMax] = useState(1000000)
+  const [locations, setLocations] = useState<string[]>([])
+
+  // Filter state
+  const [filters, setFilters] = useState<FilterOptions>({
+    category: searchParams.get('category') || 'All',
+    priceRange: [
+      parseInt(searchParams.get('minPrice') || '0'),
+      parseInt(searchParams.get('maxPrice') || '1000000')
+    ],
+    location: searchParams.get('location') || '',
+    sortBy: (searchParams.get('sortBy') as any) || 'created_at',
+    sortOrder: (searchParams.get('sortOrder') as any) || 'DESC'
+  })
 
   // Ad carousel data
   const ads = useMemo(() => [
@@ -74,7 +96,18 @@ export default function HomePage() {
   const fetchListings = useCallback(
     async (signal?: AbortSignal) => {
       try {
-        const response = await fetch('/api/listings', {
+        // Build query parameters
+        const params = new URLSearchParams()
+
+        if (search) params.append('search', search)
+        if (filters.category && filters.category !== 'All') params.append('category', filters.category)
+        if (filters.priceRange[0] > 0) params.append('minPrice', filters.priceRange[0].toString())
+        if (filters.priceRange[1] < 1000000) params.append('maxPrice', filters.priceRange[1].toString())
+        if (filters.location) params.append('location', filters.location)
+        params.append('sortBy', filters.sortBy)
+        params.append('sortOrder', filters.sortOrder)
+
+        const response = await fetch(`/api/listings?${params.toString()}`, {
           cache: 'no-store',
           signal
         })
@@ -84,7 +117,26 @@ export default function HomePage() {
         }
 
         const data: Listing[] = await response.json()
-        setListings(sortByDate(data))
+        setListings(data)
+
+        // Calculate price range and locations from all listings
+        if (data.length > 0) {
+          const prices = data.map(l => l.price)
+          const min = Math.floor(Math.min(...prices) / 1000) * 1000
+          const max = Math.ceil(Math.max(...prices) / 1000) * 1000
+          setPriceMin(min)
+          setPriceMax(max)
+
+          // Update filter price range if it's the default
+          if (filters.priceRange[0] === 0 && filters.priceRange[1] === 1000000) {
+            setFilters(prev => ({ ...prev, priceRange: [min, max] }))
+          }
+
+          // Extract unique locations
+          const uniqueLocations = Array.from(new Set(data.map(l => l.location).filter(Boolean)))
+          setLocations(uniqueLocations.sort())
+        }
+
         setError(null)
       } catch (err: any) {
         if (signal?.aborted) return
@@ -97,7 +149,7 @@ export default function HomePage() {
         setLoading(false)
       }
     },
-    [sortByDate]
+    [search, filters]
   )
 
   useEffect(() => {
@@ -111,6 +163,57 @@ export default function HomePage() {
     setLoading(true)
     setError(null)
     fetchListings()
+  }
+
+  // Update URL when filters change
+  const updateURL = useCallback((newFilters: FilterOptions, newSearch: string) => {
+    const params = new URLSearchParams()
+
+    if (newSearch) params.set('search', newSearch)
+    if (newFilters.category && newFilters.category !== 'All') params.set('category', newFilters.category)
+    if (newFilters.priceRange[0] > priceMin) params.set('minPrice', newFilters.priceRange[0].toString())
+    if (newFilters.priceRange[1] < priceMax) params.set('maxPrice', newFilters.priceRange[1].toString())
+    if (newFilters.location) params.set('location', newFilters.location)
+    if (newFilters.sortBy !== 'created_at') params.set('sortBy', newFilters.sortBy)
+    if (newFilters.sortOrder !== 'DESC') params.set('sortOrder', newFilters.sortOrder)
+
+    const queryString = params.toString()
+    router.push(queryString ? `/?${queryString}` : '/', { scroll: false })
+  }, [router, priceMin, priceMax])
+
+  // Handle filter changes
+  const handleFiltersChange = (newFilters: FilterOptions) => {
+    setFilters(newFilters)
+    setSelectedCategory(newFilters.category)
+    updateURL(newFilters, search)
+  }
+
+  // Handle clear filters
+  const handleClearFilters = () => {
+    const defaultFilters: FilterOptions = {
+      category: 'All',
+      priceRange: [priceMin, priceMax],
+      location: '',
+      sortBy: 'created_at',
+      sortOrder: 'DESC'
+    }
+    setFilters(defaultFilters)
+    setSelectedCategory('All')
+    updateURL(defaultFilters, search)
+  }
+
+  // Handle search change
+  const handleSearchChange = (value: string) => {
+    setSearch(value)
+    updateURL(filters, value)
+  }
+
+  // Handle category change from pills
+  const handleCategoryChange = (category: string) => {
+    const newFilters = { ...filters, category }
+    setFilters(newFilters)
+    setSelectedCategory(category)
+    updateURL(newFilters, search)
   }
 
   const skeletonItems = useMemo(() => Array.from({ length: 6 }), [])
@@ -164,7 +267,7 @@ export default function HomePage() {
               type="text"
               placeholder="Search for anything..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800/50 dark:text-white dark:border-slate-700/50 border-0 rounded-2xl shadow-soft focus:shadow-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 transition-all text-lg placeholder:text-gray-400 dark:placeholder:text-slate-400 backdrop-blur-sm"
             />
           </div>
@@ -187,7 +290,7 @@ export default function HomePage() {
               return (
                 <button
                   key={category}
-                  onClick={() => setSelectedCategory(category)}
+                  onClick={() => handleCategoryChange(category)}
                   className={`group relative inline-flex items-center px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl font-medium transition-all duration-200 whitespace-nowrap ${isSelected
                     ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30 scale-105'
                     : 'bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700/70 shadow-soft hover:shadow-medium hover:scale-105 backdrop-blur-sm'
@@ -200,6 +303,16 @@ export default function HomePage() {
             })}
           </div>
         </div>
+
+        {/* Filter Panel */}
+        <FilterPanel
+          filters={filters}
+          onFiltersChange={handleFiltersChange}
+          priceMin={priceMin}
+          priceMax={priceMax}
+          locations={locations}
+          onClearFilters={handleClearFilters}
+        />
 
         {/* Results Info & View Toggle */}
         <div className="flex items-center justify-between mb-6">

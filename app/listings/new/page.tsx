@@ -2,19 +2,19 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Upload, Loader2, X } from 'lucide-react'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import Link from 'next/link'
 import { CATEGORIES, supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/AuthProvider'
 import { toast } from 'react-hot-toast'
+import ImageUpload from '@/components/ImageUpload'
 
 export default function NewListingPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
   const [loading, setLoading] = useState(false)
-  const [imageFiles, setImageFiles] = useState<File[]>([])
-  const [previews, setPreviews] = useState<string[]>([])
+  const [imageUrls, setImageUrls] = useState<string[]>([])
 
   const [formData, setFormData] = useState({
     title: '',
@@ -46,34 +46,7 @@ export default function NewListingPage() {
 
   const resetForm = () => {
     setFormData(initialFormState)
-    setImageFiles([])
-    setPreviews([])
-  }
-
-  const uploadImages = async () => {
-    const urls: string[] = []
-
-    for (const file of imageFiles) {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`
-      const filePath = `${user?.id}/${fileName}`
-
-      const { error: uploadError } = await supabase.storage
-        .from('listings')
-        .upload(filePath, file)
-
-      if (uploadError) {
-        throw new Error(`Error uploading image: ${uploadError.message}`)
-      }
-
-      const { data } = supabase.storage
-        .from('listings')
-        .getPublicUrl(filePath)
-
-      urls.push(data.publicUrl)
-    }
-
-    return urls
+    setImageUrls([])
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,7 +58,7 @@ export default function NewListingPage() {
       return
     }
 
-    if (imageFiles.length === 0) {
+    if (imageUrls.length === 0) {
       toast.error('Please upload at least one image of your item')
       return
     }
@@ -93,21 +66,14 @@ export default function NewListingPage() {
     setLoading(true)
 
     try {
-      const toastId = toast.loading('Uploading images...')
-
-      let imageUrls: string[] = []
-      if (imageFiles.length > 0) {
-        imageUrls = await uploadImages()
-      }
-
-      toast.loading('Posting your item...', { id: toastId })
+      const toastId = toast.loading('Posting your item...')
 
       const listingData = {
         ...formData,
         price: parseFloat(formData.price),
         user_id: user.id,
-        image_url: imageUrls.length > 0 ? imageUrls[0] : null,
-        images: imageUrls.length > 0 ? imageUrls : null,
+        image_url: imageUrls[0], // First image as primary
+        images: imageUrls,
         status: 'available'
       }
 
@@ -130,44 +96,6 @@ export default function NewListingPage() {
       toast.error(error.message || 'Error posting item. Please try again.')
       setLoading(false)
     }
-  }
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-
-    const MAX_IMAGES = 5
-    const MAX_SIZE_MB = 5 * 1024 * 1024
-
-    if (imageFiles.length + files.length > MAX_IMAGES) {
-      toast.error(`Maximum ${MAX_IMAGES} images allowed`)
-      return
-    }
-
-    const newFiles: File[] = []
-    const newPreviews: string[] = []
-
-    Array.from(files).forEach(file => {
-      if (file.size > MAX_SIZE_MB) {
-        toast.error(`${file.name} is too large. Maximum 5MB per image.`)
-        return
-      }
-      newFiles.push(file)
-      newPreviews.push(URL.createObjectURL(file))
-    })
-
-    setImageFiles(prev => [...prev, ...newFiles])
-    setPreviews(prev => [...prev, ...newPreviews])
-  }
-
-  const removeImage = (index: number) => {
-    setImageFiles(prev => prev.filter((_, i) => i !== index))
-    setPreviews(prev => {
-      // Revoke the URL to avoid memory leaks
-      URL.revokeObjectURL(prev[index])
-      return prev.filter((_, i) => i !== index)
-    })
-    toast.success('Image removed')
   }
 
   const postCategories = CATEGORIES.filter(cat => cat !== 'All')
@@ -326,59 +254,15 @@ export default function NewListingPage() {
             {/* Image Upload */}
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
-                Item Photo *
+                Item Photos *
               </label>
 
-              {/* Image Previews */}
-              {previews.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
-                  {previews.map((img, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={img}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-xl"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg opacity-0 group-hover:opacity-100"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                      {index === 0 && (
-                        <span className="absolute bottom-2 left-2 px-2 py-1 bg-blue-600 text-white text-xs rounded-md font-semibold">
-                          Main
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* File Upload */}
-              <label className={`cursor-pointer ${previews.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageChange}
-                  className="hidden"
-                  disabled={previews.length >= 5}
-                />
-                <div className="flex flex-col items-center justify-center p-12 bg-gray-50 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-blue-400 dark:hover:border-blue-500 transition-all">
-                  <Upload className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-3" />
-                  <span className="text-base font-semibold text-gray-700 dark:text-gray-200">Upload Photos</span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {previews.length > 0 ? `${previews.length}/5 images` : 'Click to select from your files'}
-                  </span>
-                </div>
-              </label>
-
-              <p className="text-xs text-gray-500 dark:text-gray-400 flex items-start mt-2">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 mt-1.5 mr-2"></span>
-                Add up to 5 photos (required, max 5MB each). First image will be the main photo.
-              </p>
+              <ImageUpload
+                images={imageUrls}
+                onImagesChange={setImageUrls}
+                maxImages={10}
+                userId={user.id}
+              />
             </div>
 
             {/* Submit Button */}
