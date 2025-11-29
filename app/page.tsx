@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { toast } from 'react-hot-toast'
 import FeatureCard from '@/components/FeatureCard'
 import HeroHeader from '@/components/HeroHeader'
+import CategoryGrid from '@/components/CategoryGrid'
 
 
 function HomeContent() {
@@ -25,6 +26,14 @@ function HomeContent() {
   const [currentPage, setCurrentPage] = useState(1)
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
   const itemsPerPage = 12
+
+  // Sync state with URL params
+  useEffect(() => {
+    const category = searchParams.get('category') || 'All'
+    const searchQuery = searchParams.get('search') || ''
+    setSelectedCategory(category)
+    setSearch(searchQuery)
+  }, [searchParams])
 
   // Ad carousel data
   const ads = useMemo(() => [
@@ -182,48 +191,55 @@ function HomeContent() {
       <HeroHeader />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search Bar Section */}
-        <div className="mb-12 animate-fade-in">
-          <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-300 w-5 h-5 z-10 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search for anything..."
-              value={search}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800/50 dark:text-white dark:border-slate-700/50 border-0 rounded-2xl shadow-soft focus:shadow-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 transition-all text-lg placeholder:text-gray-400 dark:placeholder:text-slate-400 backdrop-blur-sm"
-            />
-          </div>
-        </div>
+        {/* Category Grid */}
+        <CategoryGrid />
 
+        {/* Sticky Search & Filter Section */}
+        <div className="sticky top-16 sm:top-20 z-30 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 bg-gray-50/95 dark:bg-slate-900/95 backdrop-blur-xl border-y border-gray-200/50 dark:border-gray-800/50 py-4 mb-8 shadow-sm transition-all duration-300">
+          <div className="max-w-7xl mx-auto">
+            {/* Search Bar Section */}
+            <div className="mb-6">
+              <div className="relative max-w-2xl mx-auto">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-300 w-5 h-5 z-10 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Search for anything..."
+                  value={search}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 bg-white dark:bg-slate-800 dark:text-white dark:border-slate-700 border border-gray-200 rounded-xl shadow-sm focus:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 transition-all text-base placeholder:text-gray-400 dark:placeholder:text-slate-400"
+                />
+              </div>
+            </div>
 
-        {/* Category Pills */}
-        <div className="mb-8 animate-slide-up">
-          <div className="flex items-center space-x-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
-              Categories
-            </h2>
-          </div>
-          <div className="flex overflow-x-auto pb-2 gap-3 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            {CATEGORIES.map((category) => {
-              const IconComponent = getIcon(CATEGORY_ICONS[category])
-              const isSelected = selectedCategory === category
+            {/* Category Pills */}
+            <div className="">
+              <div className="flex items-center space-x-2 mb-3">
+                <TrendingUp className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                <h2 className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  Quick Filters
+                </h2>
+              </div>
+              <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                {CATEGORIES.map((category) => {
+                  const IconComponent = getIcon(CATEGORY_ICONS[category])
+                  const isSelected = selectedCategory === category
 
-              return (
-                <button
-                  key={category}
-                  onClick={() => handleCategoryChange(category)}
-                  className={`group relative inline-flex items-center px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl font-medium transition-all duration-200 whitespace-nowrap ${isSelected
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30 scale-105'
-                    : 'bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700/70 shadow-soft hover:shadow-medium hover:scale-105 backdrop-blur-sm'
-                    }`}
-                >
-                  <IconComponent className={`w-4 h-4 mr-2 ${isSelected ? 'text-white' : 'text-gray-500'}`} />
-                  {category}
-                </button>
-              )
-            })}
+                  return (
+                    <button
+                      key={category}
+                      onClick={() => handleCategoryChange(category)}
+                      className={`group relative inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${isSelected
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                        : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-gray-300 dark:hover:border-slate-600'
+                        }`}
+                    >
+                      <IconComponent className={`w-3.5 h-3.5 mr-1.5 ${isSelected ? 'text-white' : 'text-gray-500 dark:text-gray-400'}`} />
+                      {category}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </div>
 
