@@ -49,10 +49,8 @@ export async function GET(request: Request) {
     // Filter by user ID (for dashboard)
     if (userId) {
       query = query.eq('user_id', userId)
-    } else {
-      // Only show available listings for public view
-      query = query.eq('status', 'available')
     }
+    // Show all listings (both available and sold) on home page
 
     // Filter by category
     if (category && category !== 'All') {
