@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        const supabase = createClient()
+        const supabase = await createServerSupabaseClient()
 
         // Use the helper function to create conversation and send first message
         const { data: conversationId, error: sendError } = await supabase
