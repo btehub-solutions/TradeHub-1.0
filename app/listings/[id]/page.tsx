@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react'
 import { Listing } from '@/lib/supabase'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { MapPin, MessageCircle, User, Phone, Package, Shield, Info } from 'lucide-react'
+import { MapPin, User, Phone, Package, Shield, Info } from 'lucide-react'
 import ImageCarousel from '@/components/ImageCarousel'
+import MessageButton from '@/components/MessageButton'
 
 export default function ListingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [listingId, setListingId] = useState<string>('')
@@ -76,11 +77,6 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
     notFound()
   }
 
-  // Format phone number for WhatsApp (remove leading 0, add 234)
-  const phoneNumber = listing.seller_phone.replace(/^0/, '234')
-  const whatsappMessage = `Hi, I'm interested in your ${listing.title} listed on TradeHub for ₦${listing.price.toLocaleString()}`
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`
-
   const displayImages = listing.images && listing.images.length > 0
     ? listing.images
     : listing.image_url
@@ -148,15 +144,13 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
 
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-colors mb-8"
-          >
-            <MessageCircle className="w-5 h-5 mr-2 flex-shrink-0" />
-            <span className="truncate">Contact Seller on WhatsApp</span>
-          </a>
+          <div className="mb-8">
+            <MessageButton
+              listingId={listing.id}
+              sellerId={listing.user_id}
+              sellerName={listing.seller_name}
+            />
+          </div>
 
           {/* How it Works & Safety Tips */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
