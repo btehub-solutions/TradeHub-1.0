@@ -311,14 +311,6 @@ export default function HomePage() {
                           </div>
                         )}
 
-                        {/* Category Badge */}
-                        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg flex items-center space-x-1.5 shadow-soft">
-                          <IconComponent className="w-3.5 h-3.5 text-blue-600" />
-                          <span className="text-xs font-semibold text-gray-700">
-                            {listing.category}
-                          </span>
-                        </div>
-
                         {/* Multiple Images Indicator */}
                         {listing.images && listing.images.length > 1 && (
                           <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center space-x-1">
@@ -332,6 +324,13 @@ export default function HomePage() {
 
                       {/* Content */}
                       <div className="p-4 sm:p-5">
+                        {/* Category Badge - Now positioned below image */}
+                        <div className="mb-3 inline-flex items-center bg-blue-50 dark:bg-blue-900/20 px-3 py-1.5 rounded-lg space-x-1.5 border border-blue-100 dark:border-blue-800/50">
+                          <IconComponent className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                          <span className="text-xs font-semibold text-blue-700 dark:text-blue-300">
+                            {listing.category}
+                          </span>
+                        </div>
                         <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {listing.title}
                         </h3>
