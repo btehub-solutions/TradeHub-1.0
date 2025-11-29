@@ -54,28 +54,35 @@ export default function ConversationPage({ params }: { params: Promise<{ convers
                 if (conv) {
                     setConversation(conv)
                 } else {
-                    // Conversation might be new and not in the list yet
-                    // Fetch it directly from the database
+                    // Conversation might be new, fetch it directly
                     const { createClient } = await import('@/lib/supabase')
                     const supabase = createClient()
 
-                    const { data: convData } = await supabase
+                    // Fetch conversation first
+                    const { data: convData, error: convError } = await supabase
                         .from('conversations')
-                        .select(`
-                            id,
-                            listing_id,
-                            buyer_id,
-                            seller_id,
-                            listing:listings (
-                                id,
-                                title
-                            )
-                        `)
+                        .select('*')
                         .eq('id', conversationId)
                         .single()
 
-                    if (convData) {
-                        setConversation(convData as any)
+                    if (convError || !convData) {
+                        console.error('Conversation not found:', convError)
+                        router.push('/messages')
+                        return
+                    }
+
+                    // Then fetch listing separately
+                    const { data: listingData } = await supabase
+                        .from('listings')
+                        .select('id, title')
+                        .eq('id', convData.listing_id)
+                        .single()
+
+                    if (listingData) {
+                        setConversation({
+                            ...convData,
+                            listing: listingData
+                        } as any)
                     } else {
                         router.push('/messages')
                     }
