@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Heart, ArrowLeft, Package, MapPin, Trash2 } from 'lucide-react'
@@ -36,13 +36,7 @@ export default function WishlistPage() {
         }
     }, [user, authLoading, router])
 
-    useEffect(() => {
-        if (user) {
-            fetchFavorites()
-        }
-    }, [user])
-
-    const fetchFavorites = async () => {
+    const fetchFavorites = useCallback(async () => {
         if (!user) return
 
         try {
@@ -60,7 +54,13 @@ export default function WishlistPage() {
         } finally {
             setLoading(false)
         }
-    }
+    }, [user])
+
+    useEffect(() => {
+        if (user) {
+            fetchFavorites()
+        }
+    }, [user, fetchFavorites])
 
     const handleRemove = async (listingId: string) => {
         if (!user) return

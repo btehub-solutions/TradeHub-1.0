@@ -38,7 +38,7 @@ export default function ImageUpload({
         }
     }
 
-    const uploadImages = async (files: File[]) => {
+    const uploadImages = useCallback(async (files: File[]) => {
         if (images.length + files.length > maxImages) {
             toast.error(`Maximum ${maxImages} images allowed`)
             return
@@ -91,7 +91,7 @@ export default function ImageUpload({
         } finally {
             setUploading(false)
         }
-    }
+    }, [images, maxImages, userId, onImagesChange])
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles.length > 0) {
@@ -149,8 +149,8 @@ export default function ImageUpload({
                 <div
                     {...getRootProps()}
                     className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all ${isDragActive
-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                            : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 bg-gray-50 dark:bg-gray-800/50'
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                        : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 bg-gray-50 dark:bg-gray-800/50'
                         } ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     <input {...getInputProps()} />

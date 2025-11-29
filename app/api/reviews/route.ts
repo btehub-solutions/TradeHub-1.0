@@ -55,14 +55,20 @@ export async function GET(request: NextRequest) {
         }
 
         // Transform data for easier consumption
-        const reviews = data?.map(review => ({
-            id: review.id,
-            rating: review.rating,
-            comment: review.comment,
-            createdAt: review.created_at,
-            reviewerName: review.reviewer?.raw_user_meta_data?.full_name || 'Anonymous User',
-            listingTitle: review.listing?.title
-        })) || []
+        // Transform data for easier consumption
+        const reviews = data?.map((review: any) => {
+            const reviewer = Array.isArray(review.reviewer) ? review.reviewer[0] : review.reviewer
+            const listing = Array.isArray(review.listing) ? review.listing[0] : review.listing
+
+            return {
+                id: review.id,
+                rating: review.rating,
+                comment: review.comment,
+                createdAt: review.created_at,
+                reviewerName: reviewer?.raw_user_meta_data?.full_name || 'Anonymous User',
+                listingTitle: listing?.title
+            }
+        }) || []
 
         return NextResponse.json(reviews)
 

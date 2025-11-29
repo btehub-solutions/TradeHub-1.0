@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useAuth } from '@/lib/AuthProvider'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
@@ -40,7 +40,7 @@ export default function AnalyticsPage() {
         }
     }, [user, timeRange])
 
-    const fetchAnalytics = async () => {
+    const fetchAnalytics = useCallback(async () => {
         try {
             setLoading(true)
             const response = await fetch(`/api/analytics?userId=${user?.id}&days=${timeRange}`)
@@ -66,7 +66,7 @@ export default function AnalyticsPage() {
         } finally {
             setLoading(false)
         }
-    }
+    }, [user, timeRange])
 
     if (authLoading || !user) {
         return (
@@ -106,8 +106,8 @@ export default function AnalyticsPage() {
                                     key={days}
                                     onClick={() => setTimeRange(days)}
                                     className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${timeRange === days
-                                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-700'
+                                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-700'
                                         }`}
                                 >
                                     {days === 7 ? 'Last 7 Days' : days === 30 ? 'Last 30 Days' : 'Last 3 Months'}
