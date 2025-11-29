@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -11,40 +11,9 @@ export async function GET(
 ) {
     try {
         const { conversationId } = await params
-        const { searchParams } = new URL(request.url)
-        const userId = searchParams.get('userId')
+        const supabase = await createServerSupabaseClient()
 
-        if (!userId) {
-            return NextResponse.json(
-                { error: 'User ID is required' },
-                { status: 401 }
-            )
-        }
-
-        const supabase = createClient()
-
-        // Verify user is part of this conversation
-        const { data: conversation, error: convError } = await supabase
-            .from('conversations')
-            .select('buyer_id, seller_id')
-            .eq('id', conversationId)
-            .single()
-
-        if (convError || !conversation) {
-            return NextResponse.json(
-                { error: 'Conversation not found' },
-                { status: 404 }
-            )
-        }
-
-        if (conversation.buyer_id !== userId && conversation.seller_id !== userId) {
-            return NextResponse.json(
-                { error: 'Unauthorized' },
-                { status: 403 }
-            )
-        }
-
-        // Fetch messages
+        // Fetch messages (RLS will handle authorization)
         const { data: messages, error: msgError } = await supabase
             .from('messages')
             .select('*')
@@ -87,10 +56,9 @@ export async function PATCH(
             )
         }
 
-        const supabase = createClient()
+        const supabase = await createServerSupabaseClient()
 
         // Mark all unread messages in this conversation as read
-        // (only messages sent by the other user)
         const { error } = await supabase
             .from('messages')
             .update({ read: true })
