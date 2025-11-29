@@ -9,6 +9,16 @@ export async function GET(request: NextRequest) {
     try {
         const supabase = await createServerSupabaseClient()
 
+        // Get authenticated user
+        const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+        if (authError || !user) {
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            )
+        }
+
         // Get conversations with listing and other user details
         const { data, error } = await supabase
             .from('conversations')
@@ -28,7 +38,7 @@ export async function GET(request: NextRequest) {
           status
         )
       `)
-            .or(`buyer_id.eq.${userId},seller_id.eq.${userId}`)
+            .or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`)
             .order('updated_at', { ascending: false })
 
         if (error) {
@@ -59,10 +69,10 @@ export async function GET(request: NextRequest) {
                     .select('*', { count: 'exact', head: true })
                     .eq('conversation_id', conv.id)
                     .eq('read', false)
-                    .neq('sender_id', userId)
+                    .neq('sender_id', user.id)
 
                 // Determine other user ID
-                const otherUserId = conv.buyer_id === userId ? conv.seller_id : conv.buyer_id
+                const otherUserId = conv.buyer_id === user.id ? conv.seller_id : conv.buyer_id
 
                 // Get other user details
                 const { data: otherUser } = await supabase
