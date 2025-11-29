@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { toast } from 'react-hot-toast'
 import FeatureCard from '@/components/FeatureCard'
 import HeroHeader from '@/components/HeroHeader'
-import FilterPanel, { FilterOptions } from '@/components/FilterPanel'
+
 
 function HomeContent() {
   const router = useRouter()
@@ -25,23 +25,6 @@ function HomeContent() {
   const [currentPage, setCurrentPage] = useState(1)
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
   const itemsPerPage = 12
-
-  // Price range state (will be calculated from listings)
-  const [priceMin, setPriceMin] = useState(0)
-  const [priceMax, setPriceMax] = useState(1000000)
-  const [locations, setLocations] = useState<string[]>([])
-
-  // Filter state
-  const [filters, setFilters] = useState<FilterOptions>({
-    category: searchParams.get('category') || 'All',
-    priceRange: [
-      parseInt(searchParams.get('minPrice') || '0'),
-      parseInt(searchParams.get('maxPrice') || '1000000')
-    ],
-    location: searchParams.get('location') || '',
-    sortBy: (searchParams.get('sortBy') as any) || 'created_at',
-    sortOrder: (searchParams.get('sortOrder') as any) || 'DESC'
-  })
 
   // Ad carousel data
   const ads = useMemo(() => [
@@ -85,14 +68,6 @@ function HomeContent() {
     }
   ], [])
 
-  const sortByDate = useCallback(
-    (items: Listing[]) =>
-      [...items].sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      ),
-    []
-  )
-
   const fetchListings = useCallback(
     async (signal?: AbortSignal) => {
       try {
@@ -100,12 +75,7 @@ function HomeContent() {
         const params = new URLSearchParams()
 
         if (search) params.append('search', search)
-        if (filters.category && filters.category !== 'All') params.append('category', filters.category)
-        if (filters.priceRange[0] > 0) params.append('minPrice', filters.priceRange[0].toString())
-        if (filters.priceRange[1] < 1000000) params.append('maxPrice', filters.priceRange[1].toString())
-        if (filters.location) params.append('location', filters.location)
-        params.append('sortBy', filters.sortBy)
-        params.append('sortOrder', filters.sortOrder)
+        if (selectedCategory && selectedCategory !== 'All') params.append('category', selectedCategory)
 
         const response = await fetch(`/api/listings?${params.toString()}`, {
           cache: 'no-store',
@@ -118,25 +88,6 @@ function HomeContent() {
 
         const data: Listing[] = await response.json()
         setListings(data)
-
-        // Calculate price range and locations from all listings
-        if (data.length > 0) {
-          const prices = data.map(l => l.price)
-          const min = Math.floor(Math.min(...prices) / 1000) * 1000
-          const max = Math.ceil(Math.max(...prices) / 1000) * 1000
-          setPriceMin(min)
-          setPriceMax(max)
-
-          // Update filter price range if it's the default
-          if (filters.priceRange[0] === 0 && filters.priceRange[1] === 1000000) {
-            setFilters(prev => ({ ...prev, priceRange: [min, max] }))
-          }
-
-          // Extract unique locations
-          const uniqueLocations = Array.from(new Set(data.map(l => l.location).filter(Boolean)))
-          setLocations(uniqueLocations.sort())
-        }
-
         setError(null)
       } catch (err: any) {
         if (signal?.aborted) return
@@ -149,7 +100,7 @@ function HomeContent() {
         setLoading(false)
       }
     },
-    [search, filters]
+    [search, selectedCategory]
   )
 
   useEffect(() => {
@@ -166,54 +117,26 @@ function HomeContent() {
   }
 
   // Update URL when filters change
-  const updateURL = useCallback((newFilters: FilterOptions, newSearch: string) => {
+  const updateURL = useCallback((newCategory: string, newSearch: string) => {
     const params = new URLSearchParams()
 
     if (newSearch) params.set('search', newSearch)
-    if (newFilters.category && newFilters.category !== 'All') params.set('category', newFilters.category)
-    if (newFilters.priceRange[0] > priceMin) params.set('minPrice', newFilters.priceRange[0].toString())
-    if (newFilters.priceRange[1] < priceMax) params.set('maxPrice', newFilters.priceRange[1].toString())
-    if (newFilters.location) params.set('location', newFilters.location)
-    if (newFilters.sortBy !== 'created_at') params.set('sortBy', newFilters.sortBy)
-    if (newFilters.sortOrder !== 'DESC') params.set('sortOrder', newFilters.sortOrder)
+    if (newCategory && newCategory !== 'All') params.set('category', newCategory)
 
     const queryString = params.toString()
     router.push(queryString ? `/?${queryString}` : '/', { scroll: false })
-  }, [router, priceMin, priceMax])
-
-  // Handle filter changes
-  const handleFiltersChange = (newFilters: FilterOptions) => {
-    setFilters(newFilters)
-    setSelectedCategory(newFilters.category)
-    updateURL(newFilters, search)
-  }
-
-  // Handle clear filters
-  const handleClearFilters = () => {
-    const defaultFilters: FilterOptions = {
-      category: 'All',
-      priceRange: [priceMin, priceMax],
-      location: '',
-      sortBy: 'created_at',
-      sortOrder: 'DESC'
-    }
-    setFilters(defaultFilters)
-    setSelectedCategory('All')
-    updateURL(defaultFilters, search)
-  }
+  }, [router])
 
   // Handle search change
   const handleSearchChange = (value: string) => {
     setSearch(value)
-    updateURL(filters, value)
+    updateURL(selectedCategory, value)
   }
 
   // Handle category change from pills
   const handleCategoryChange = (category: string) => {
-    const newFilters = { ...filters, category }
-    setFilters(newFilters)
     setSelectedCategory(category)
-    updateURL(newFilters, search)
+    updateURL(category, search)
   }
 
   const skeletonItems = useMemo(() => Array.from({ length: 6 }), [])
@@ -304,15 +227,7 @@ function HomeContent() {
           </div>
         </div>
 
-        {/* Filter Panel */}
-        <FilterPanel
-          filters={filters}
-          onFiltersChange={handleFiltersChange}
-          priceMin={priceMin}
-          priceMax={priceMax}
-          locations={locations}
-          onClearFilters={handleClearFilters}
-        />
+
 
         {/* Results Info & View Toggle */}
         <div className="flex items-center justify-between mb-6">
