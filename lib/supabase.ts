@@ -3,7 +3,7 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-// Export createClient for use in API routes
+// Export createClient for use in API routes (server-side, no auth context by default)
 export const createClient = () => {
   return createSupabaseClient(supabaseUrl, supabaseKey, {
     auth: {
@@ -13,35 +13,13 @@ export const createClient = () => {
   })
 }
 
-export const supabase = createSupabaseClient(supabaseUrl, supabaseKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-    storageKey: 'tradehub-auth-token',
-    flowType: 'pkce',
-    debug: false
-  },
-  db: {
-    schema: 'public'
-  },
-  global: {
-    headers: {
-      'x-client-info': 'tradehub-app'
-    },
-    fetch: (url, options = {}) => {
-      return fetch(url, {
-        ...options,
-        // Add timeout to prevent hanging requests
-        signal: AbortSignal.timeout(10000)
-      }).catch(error => {
-        console.error('Supabase fetch error:', error)
-        throw error
-      })
-    }
-  }
-})
+// Client-side Supabase client using cookies (via @supabase/ssr)
+import { createBrowserClient } from '@supabase/ssr'
+
+export const supabase = createBrowserClient(
+  supabaseUrl,
+  supabaseKey
+)
 
 // Types
 export type Listing = {
