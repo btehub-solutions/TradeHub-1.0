@@ -8,7 +8,7 @@ import { Listing } from '@/lib/supabase'
 import {
   Edit2, Trash2, CheckCircle, Eye, Plus, Package, MapPin,
   TrendingUp, Banknote, ShoppingBag, Activity, Search, Filter,
-  MoreVertical, Calendar, Heart
+  MoreVertical, Calendar
 } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { toast } from 'react-hot-toast'
@@ -17,7 +17,7 @@ export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth()
   const router = useRouter()
   const [listings, setListings] = useState<Listing[]>([])
-  const [favoritesCount, setFavoritesCount] = useState(0)
+
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'available' | 'sold'>('all')
   const [searchQuery, setSearchQuery] = useState('')
@@ -67,16 +67,6 @@ export default function DashboardPage() {
       const listingsData: Listing[] = await listingsResponse.json()
       setListings(listingsData)
 
-      // Fetch favorites count
-      const { count, error: favError } = await import('@/lib/supabase').then(m => m.supabase
-        .from('favorites')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-      )
-
-      if (!favError) {
-        setFavoritesCount(count || 0)
-      }
 
     } catch (error: any) {
       console.error('Error fetching data:', error)
@@ -187,7 +177,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
             <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg shadow-blue-500/20 relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <Package className="w-16 h-16" />
@@ -229,18 +219,7 @@ export default function DashboardPage() {
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">Γéª{stats.totalValue.toLocaleString()}</h3>
             </div>
 
-            <Link href="/favorites">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow group cursor-pointer h-full">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                    <Heart className="w-6 h-6 text-red-600 dark:text-red-400" />
-                  </div>
-                  <span className="text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-full">Saved</span>
-                </div>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">My Favorites</p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{favoritesCount}</h3>
-              </div>
-            </Link>
+
           </div>
         </div>
       </div>
