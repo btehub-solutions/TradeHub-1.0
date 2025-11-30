@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Heart } from 'lucide-react'
 import { useAuth } from '@/lib/AuthProvider'
+import { supabase } from '@/lib/supabase'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 
@@ -52,32 +53,33 @@ export default function FavoriteButton({
         try {
             if (isFavorited) {
                 // Remove from favorites
-                const response = await fetch(
-                    `/api/favorites?userId=${user.id}&listingId=${listingId}`,
-                    { method: 'DELETE' }
-                )
+                const { error } = await supabase
+                    .from('favorites')
+                    .delete()
+                    .eq('user_id', user.id)
+                    .eq('listing_id', listingId)
 
-                if (!response.ok) {
-                    throw new Error('Failed to remove favorite')
-                }
+                if (error) throw error
 
                 setIsFavorited(false)
                 if (showCount) setFavoriteCount(prev => Math.max(0, prev - 1))
                 toast.success('Removed from favorites')
             } else {
                 // Add to favorites
-                const response = await fetch('/api/favorites', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId: user.id,
-                        listingId
+                const { error } = await supabase
+                    .from('favorites')
+                    .insert({
+                        user_id: user.id,
+                        listing_id: listingId
                     })
-                })
 
-                if (!response.ok) {
-                    const error = await response.json()
-                    throw new Error(error.error || 'Failed to add favorite')
+                if (error) {
+                    if (error.message.includes('unique constraint')) {
+                        // Already favorited, just update state
+                        setIsFavorited(true)
+                        return
+                    }
+                    throw error
                 }
 
                 setIsFavorited(true)
@@ -97,8 +99,8 @@ export default function FavoriteButton({
             onClick={handleClick}
             disabled={isLoading}
             className={`${sizeClasses[size]} flex items-center justify-center rounded-full transition-all ${isFavorited
-                    ? 'bg-red-500 hover:bg-red-600 text-white'
-                    : 'bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300'
+                ? 'bg-red-500 hover:bg-red-600 text-white'
+                : 'bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300'
                 } shadow-lg hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm`}
             title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
             aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
