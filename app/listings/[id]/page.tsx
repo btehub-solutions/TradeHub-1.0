@@ -89,6 +89,15 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
       ? [listing.image_url]
       : []
 
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      toast.success('Link copied to clipboard!')
+    } catch (err) {
+      toast.error('Failed to copy link')
+    }
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
       {/* Breadcrumbs */}

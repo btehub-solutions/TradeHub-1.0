@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useAuth } from '@/lib/AuthProvider'
 import { supabase } from '@/lib/supabase'
 import { Send, ArrowLeft } from 'lucide-react'
@@ -39,19 +39,7 @@ export default function ChatWindow({
     const [sending, setSending] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
-    useEffect(() => {
-        if (user) {
-            fetchMessages()
-            markAsRead()
-            subscribeToMessages()
-        }
-    }, [conversationId, user])
-
-    useEffect(() => {
-        scrollToBottom()
-    }, [messages])
-
-    const fetchMessages = async () => {
+    const fetchMessages = useCallback(async () => {
         try {
             const response = await fetch(`/api/messages/${conversationId}`)
             if (response.ok) {
@@ -63,21 +51,22 @@ export default function ChatWindow({
         } finally {
             setLoading(false)
         }
-    }
+    }, [conversationId])
 
-    const markAsRead = async () => {
+    const markAsRead = useCallback(async () => {
+        if (!user?.id) return
         try {
             await fetch(`/api/messages/${conversationId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: user?.id })
+                body: JSON.stringify({ userId: user.id })
             })
         } catch (error) {
             console.error('Error marking messages as read:', error)
         }
-    }
+    }, [conversationId, user?.id])
 
-    const subscribeToMessages = () => {
+    const subscribeToMessages = useCallback(() => {
         const channel = supabase
             .channel(`conversation:${conversationId}`)
             .on(
@@ -103,7 +92,20 @@ export default function ChatWindow({
         return () => {
             supabase.removeChannel(channel)
         }
-    }
+    }, [conversationId, user?.id, markAsRead])
+
+    useEffect(() => {
+        if (user) {
+            fetchMessages()
+            markAsRead()
+            const cleanup = subscribeToMessages()
+            return cleanup
+        }
+    }, [user, fetchMessages, markAsRead, subscribeToMessages])
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages])
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
