@@ -11,6 +11,8 @@ import { toast } from 'react-hot-toast'
 import FeatureCard from '@/components/FeatureCard'
 import HeroHeader from '@/components/HeroHeader'
 import CategoryGrid from '@/components/CategoryGrid'
+import ListingCard from '@/components/ListingCard'
+import QuickViewModal from '@/components/QuickViewModal'
 
 
 function HomeContent() {
@@ -25,6 +27,7 @@ function HomeContent() {
   const [viewMode, setViewMode] = useState<'grid' | 'single'>('grid')
   const [currentPage, setCurrentPage] = useState(1)
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
+  const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
   const itemsPerPage = 12
 
   // Sync state with URL params
@@ -310,90 +313,18 @@ function HomeContent() {
               ? 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'
               : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
               }`}>
-              {paginatedListings.map((listing, index) => {
-                const IconComponent = getIcon(CATEGORY_ICONS[listing.category])
-
-                return (
-                  <Link
-                    href={`/listings/${listing.id}`}
-                    key={listing.id}
-                    className="group animate-scale-in"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <div className="bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 rounded-2xl shadow-soft hover:shadow-medium dark:shadow-slate-900/50 transition-all backdrop-blur-sm">
-                      {error && (
-                        <div className="mb-6 p-4 rounded-xl border border-red-200 bg-red-50 flex flex-col gap-3 text-sm text-red-700">
-                          <span>{error}</span>
-                          <button
-                            onClick={handleRetry}
-                            disabled={loading}
-                            className="self-start px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 disabled:opacity-50"
-                          >
-                            {loading ? 'Retrying...' : 'Try Again'}
-                          </button>
-                        </div>
-                      )}
-                      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-2xl">
-                        {listing.image_url ? (
-                          <img
-                            src={listing.image_url}
-                            alt={listing.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <IconComponent className="w-16 h-16 text-gray-300" />
-                          </div>
-                        )}
-
-                        {/* Sold Badge Overlay */}
-                        {listing.status === 'sold' && (
-                          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-                            <div className="bg-gray-900/90 text-white px-6 py-3 rounded-xl font-bold text-lg shadow-xl border-2 border-white/20">
-                              SOLD
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Multiple Images Indicator */}
-                        {listing.images && listing.images.length > 1 && (
-                          <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center space-x-1">
-                            <Images className="w-3.5 h-3.5 text-white" />
-                            <span className="text-xs font-semibold text-white">
-                              {listing.images.length}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-4 sm:p-5">
-                        {/* Category Badge - Now positioned below image */}
-                        <div className="mb-3 inline-flex items-center bg-blue-50 dark:bg-blue-900/20 px-3 py-1.5 rounded-lg space-x-1.5 border border-blue-100 dark:border-blue-800/50">
-                          <IconComponent className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                          <span className="text-xs font-semibold text-blue-700 dark:text-blue-300">
-                            {listing.category}
-                          </span>
-                        </div>
-                        <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                          {listing.title}
-                        </h3>
-
-                        <div className="flex items-baseline mb-3">
-                          <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                            ₦{listing.price.toLocaleString()}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 text-gray-400 dark:text-gray-500" />
-                          <span className="line-clamp-1">{listing.location}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                )
-              })}
+              {paginatedListings.map((listing, index) => (
+                <div
+                  key={listing.id}
+                  className="animate-scale-in"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <ListingCard
+                    listing={listing}
+                    onQuickView={setSelectedListing}
+                  />
+                </div>
+              ))}
             </div>
 
             {/* Pagination Controls */}
@@ -587,6 +518,13 @@ function HomeContent() {
           </div>
         </div>
       </div>
+      {/* Quick View Modal */}
+      {selectedListing && (
+        <QuickViewModal
+          listing={selectedListing}
+          onClose={() => setSelectedListing(null)}
+        />
+      )}
     </div>
   )
 }
