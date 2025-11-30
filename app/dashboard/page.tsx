@@ -216,7 +216,7 @@ export default function DashboardPage() {
                 <span className="text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-full">Value</span>
               </div>
               <p className="text-gray-500 dark:text-gray-400 text-sm">Total Inventory Value</p>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">Γéª{stats.totalValue.toLocaleString()}</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">₦{stats.totalValue.toLocaleString()}</h3>
             </div>
 
 
@@ -331,7 +331,7 @@ export default function DashboardPage() {
 
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                      Γéª{listing.price.toLocaleString()}
+                      ₦{listing.price.toLocaleString()}
                     </span>
                     <div className="flex items-center text-xs text-gray-400">
                       <Calendar className="w-3 h-3 mr-1" />
