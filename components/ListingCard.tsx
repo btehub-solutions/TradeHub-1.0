@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { Listing, CATEGORY_ICONS } from '@/lib/supabase';
 import { MapPin, Package, Eye, Images } from 'lucide-react';
 import * as Icons from 'lucide-react';
-import FavoriteButton from '@/components/FavoriteButton';
 
 interface ListingCardProps {
   listing: Listing;
@@ -53,10 +52,6 @@ export default function ListingCard({ listing, onQuickView, priority = false }: 
           </div>
         )}
 
-        {/* Favorite Button */}
-        <div className="absolute top-3 right-3 z-10">
-          <FavoriteButton listingId={listing.id} size="sm" />
-        </div>
 
         {/* Quick View Button - Desktop Hover */}
         {onQuickView && (

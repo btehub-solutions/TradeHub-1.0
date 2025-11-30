@@ -147,14 +147,6 @@ export default function Header() {
                           <span>My Dashboard</span>
                         </Link>
 
-                        <Link
-                          href="/favorites"
-                          onClick={() => setUserMenuOpen(false)}
-                          className="flex items-center space-x-3 px-3 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
-                        >
-                          <Heart className="w-4 h-4 text-gray-400" />
-                          <span>My Favorites</span>
-                        </Link>
 
                         <div className="h-px bg-gray-100 dark:bg-gray-800 my-1" />
                         <button
@@ -245,12 +237,6 @@ export default function Header() {
                   </button>
                 </Link>
 
-                <Link href="/favorites" onClick={closeMobileMenu}>
-                  <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
-                    <Heart className="w-5 h-5 text-gray-400" />
-                    <span>My Favorites</span>
-                  </button>
-                </Link>
 
                 <Link href="/listings/new" onClick={closeMobileMenu}>
                   <button className="w-full flex items-center justify-center space-x-2 px-4 py-3 mt-2 font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:shadow-lg transition-all">
