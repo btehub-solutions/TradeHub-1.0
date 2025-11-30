@@ -23,32 +23,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let isMounted = true
 
-    // Get initial session
-    const initAuth = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession()
-        if (error) {
-          console.error('Error getting session:', error)
-          // Don't throw, just log and continue
-        }
-        if (isMounted) {
-          setUser(session?.user ?? null)
-          setLoading(false)
-        }
-      } catch (error) {
-        console.error('Failed to initialize auth:', error)
-        if (isMounted) {
-          setLoading(false)
-        }
-      }
-    }
-
-    initAuth()
-
-    // Listen for auth changes with error handling
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        // Only log important events, not token refreshes
+      (event, session) => {
         if (event !== 'TOKEN_REFRESHED') {
           console.log('Auth state changed:', event, session?.user?.email)
         }
