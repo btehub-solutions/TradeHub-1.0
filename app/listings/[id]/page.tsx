@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react'
 import { Listing } from '@/lib/supabase'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { MapPin, User, Phone, Package, Shield, Info, MessageCircle } from 'lucide-react'
+import { MapPin, User, Phone, Package, Shield, Info, MessageCircle, Share2, ChevronRight, Home } from 'lucide-react'
 import ImageCarousel from '@/components/ImageCarousel'
+import RelatedListings from '@/components/RelatedListings'
+import { toast } from 'react-hot-toast'
 
 export default function ListingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [listingId, setListingId] = useState<string>('')
@@ -89,12 +91,24 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
-      <Link
-        href="/"
-        className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mb-6"
-      >
-        ← Back to listings
-      </Link>
+      {/* Breadcrumbs */}
+      <nav className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-6 overflow-x-auto whitespace-nowrap pb-2">
+        <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center transition-colors">
+          <Home className="w-4 h-4 mr-1" />
+          Home
+        </Link>
+        <ChevronRight className="w-4 h-4 mx-2 flex-shrink-0" />
+        <Link
+          href={`/?category=${encodeURIComponent(listing.category)}`}
+          className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        >
+          {listing.category}
+        </Link>
+        <ChevronRight className="w-4 h-4 mx-2 flex-shrink-0" />
+        <span className="text-gray-900 dark:text-white font-medium truncate max-w-[200px]">
+          {listing.title}
+        </span>
+      </nav>
 
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900/50 overflow-hidden border dark:border-slate-700/50">
         {/* Image Carousel */}
@@ -109,7 +123,18 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
             {listing.category}
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 break-words">{listing.title}</h1>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white break-words flex-1">
+              {listing.title}
+            </h1>
+            <button
+              onClick={handleShare}
+              className="p-2 rounded-full bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-600 dark:text-gray-300 transition-colors"
+              title="Share listing"
+            >
+              <Share2 className="w-5 h-5" />
+            </button>
+          </div>
 
           <div className="flex flex-col sm:flex-row sm:items-baseline gap-3 sm:gap-4 mb-6">
             <p className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400">
@@ -228,6 +253,12 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
       </div>
+
+      {/* Related Listings */}
+      <RelatedListings
+        categoryId={listing.category}
+        currentListingId={listing.id}
+      />
     </div>
   )
 }
