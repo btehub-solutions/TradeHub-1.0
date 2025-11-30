@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Chatbot from '@/components/Chatbot'
+import BackToTop from '@/components/BackToTop'
 import { AuthProvider } from '@/lib/AuthProvider'
 import { ThemeProvider } from '@/lib/ThemeProvider'
 import { Toaster } from 'react-hot-toast'
@@ -34,6 +35,7 @@ export default function RootLayout({
             </main>
             <Footer />
             <Chatbot />
+            <BackToTop />
           </AuthProvider>
           <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
         </ThemeProvider>
