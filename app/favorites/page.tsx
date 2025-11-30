@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useAuth } from '@/lib/AuthProvider'
 import { supabase, Listing } from '@/lib/supabase'
 import ListingCard from '@/components/ListingCard'
@@ -14,18 +14,7 @@ export default function FavoritesPage() {
     const [favorites, setFavorites] = useState<Listing[]>([])
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        if (!authLoading && !user) {
-            router.push('/auth/signin')
-            return
-        }
-
-        if (user) {
-            fetchFavorites()
-        }
-    }, [user, authLoading, router])
-
-    const fetchFavorites = async () => {
+    const fetchFavorites = useCallback(async () => {
         try {
             // Fetch favorites joined with listings
             const { data, error } = await supabase
@@ -60,7 +49,18 @@ export default function FavoritesPage() {
         } finally {
             setLoading(false)
         }
-    }
+    }, [user])
+
+    useEffect(() => {
+        if (!authLoading && !user) {
+            router.push('/auth/signin')
+            return
+        }
+
+        if (user) {
+            fetchFavorites()
+        }
+    }, [user, authLoading, router, fetchFavorites])
 
     if (authLoading || loading) {
         return (
@@ -80,7 +80,7 @@ export default function FavoritesPage() {
                 </div>
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Favorites</h1>
-                    <p className="text-gray-500 dark:text-gray-400">Items you've saved for later</p>
+                    <p className="text-gray-500 dark:text-gray-400">Items you&apos;ve saved for later</p>
                 </div>
             </div>
 
