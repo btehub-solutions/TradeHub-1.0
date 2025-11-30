@@ -7,7 +7,7 @@ import { useTheme } from '@/lib/ThemeProvider'
 import { useRouter } from 'next/navigation'
 import {
   ShoppingBag, Menu, X, Sun, Moon, LogOut, LayoutDashboard,
-  Package, User, Home, Plus
+  Package, User, Home, Plus, Heart
 } from 'lucide-react'
 
 export default function Header() {
@@ -147,6 +147,15 @@ export default function Header() {
                           <span>My Dashboard</span>
                         </Link>
 
+                        <Link
+                          href="/favorites"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center space-x-3 px-3 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
+                        >
+                          <Heart className="w-4 h-4 text-gray-400" />
+                          <span>My Favorites</span>
+                        </Link>
+
                         <div className="h-px bg-gray-100 dark:bg-gray-800 my-1" />
                         <button
                           onClick={handleSignOut}
@@ -233,6 +242,13 @@ export default function Header() {
                   <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
                     <LayoutDashboard className="w-5 h-5 text-gray-400" />
                     <span>Dashboard</span>
+                  </button>
+                </Link>
+
+                <Link href="/favorites" onClick={closeMobileMenu}>
+                  <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                    <Heart className="w-5 h-5 text-gray-400" />
+                    <span>My Favorites</span>
                   </button>
                 </Link>
 
