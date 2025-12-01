@@ -13,6 +13,8 @@ import HeroHeader from '@/components/HeroHeader'
 import CategoryGrid from '@/components/CategoryGrid'
 import ListingCard from '@/components/ListingCard'
 import QuickViewModal from '@/components/QuickViewModal'
+import Testimonials from '@/components/Testimonials'
+import TrustBadges from '@/components/TrustBadges'
 
 
 function HomeContent() {
@@ -397,6 +399,12 @@ function HomeContent() {
             )}
           </>
         )}
+
+        {/* Testimonials Section */}
+        <Testimonials />
+
+        {/* Trust Badges Section */}
+        <TrustBadges />
 
         {/* Ad Carousel Section */}
         <div className="mt-20 mb-16 animate-fade-in">

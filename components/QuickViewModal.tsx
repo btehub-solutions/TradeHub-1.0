@@ -57,13 +57,13 @@ export default function QuickViewModal({ listing, onClose }: QuickViewModalProps
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-md transition-all"
+                    className="absolute top-3 right-3 z-20 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-md transition-all"
                 >
                     <X className="w-5 h-5" />
                 </button>
 
                 {/* Image Section */}
-                <div className="w-full md:w-1/2 bg-gray-100 dark:bg-slate-800 relative min-h-[300px] md:min-h-full">
+                <div className="w-full md:w-1/2 bg-gray-100 dark:bg-slate-800 relative min-h-[200px] md:min-h-full">
                     {images.length > 0 ? (
                         <div className="relative w-full h-full">
                             <img
@@ -83,8 +83,8 @@ export default function QuickViewModal({ listing, onClose }: QuickViewModalProps
                                                 setCurrentImageIndex(idx)
                                             }}
                                             className={`w-2 h-2 rounded-full transition-all ${currentImageIndex === idx
-                                                    ? 'bg-white w-6'
-                                                    : 'bg-white/50 hover:bg-white/80'
+                                                ? 'bg-white w-6'
+                                                : 'bg-white/50 hover:bg-white/80'
                                                 }`}
                                         />
                                     ))}
@@ -108,7 +108,7 @@ export default function QuickViewModal({ listing, onClose }: QuickViewModalProps
                 </div>
 
                 {/* Details Section */}
-                <div className="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto custom-scrollbar">
+                <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 overflow-y-auto custom-scrollbar">
                     <div className="flex items-center gap-2 mb-4">
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
                             <CategoryIcon className="w-3 h-3 mr-1" />
