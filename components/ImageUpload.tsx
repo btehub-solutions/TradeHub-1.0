@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone'
 import imageCompression from 'browser-image-compression'
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react'
 import { toast } from 'react-hot-toast'
+import { supabase } from '@/lib/supabase'
 
 interface ImageUploadProps {
     images: string[]
@@ -37,10 +38,6 @@ export default function ImageUpload({
             return file // Return original if compression fails
         }
     }
-
-    import { supabase } from '@/lib/supabase'
-
-    // ... imports
 
     const uploadImages = useCallback(async (files: File[]) => {
         if (images.length + files.length > maxImages) {
@@ -102,9 +99,23 @@ export default function ImageUpload({
         }
     }, [images, maxImages, userId, onImagesChange])
 
-    // ... onDrop
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        if (acceptedFiles.length > 0) {
+            uploadImages(acceptedFiles)
+        }
+    }, [uploadImages])
 
-    // ... useDropzone
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: {
+            'image/jpeg': ['.jpg', '.jpeg'],
+            'image/png': ['.png'],
+            'image/webp': ['.webp'],
+            'image/gif': ['.gif']
+        },
+        maxFiles: maxImages - images.length,
+        disabled: uploading || images.length >= maxImages
+    })
 
     const removeImage = async (index: number) => {
         const imageUrl = images[index]
