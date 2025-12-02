@@ -10,7 +10,7 @@ export default function SellerGuidePage() {
             <div className="bg-gradient-to-br from-blue-600 to-blue-800 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                     <div className="text-center">
-                        <h1 className="text-4xl sm:text-5xl font-bold mb-4">Seller's Guide to Success</h1>
+                        <h1 className="text-4xl sm:text-5xl font-bold mb-4">Seller&apos;s Guide to Success</h1>
                         <p className="text-xl text-blue-100 max-w-3xl mx-auto">
                             Master the art of selling on TradeHub with our comprehensive guide. Learn proven strategies to maximize your sales and build a thriving business.
                         </p>
@@ -177,7 +177,7 @@ export default function SellerGuidePage() {
                                     <li className="flex items-start gap-3">
                                         <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                                         <div>
-                                            <strong className="text-gray-900 dark:text-white">What's Included:</strong>
+                                            <strong className="text-gray-900 dark:text-white">What&apos;s Included:</strong>
                                             <span className="text-gray-600 dark:text-gray-400 ml-2">Mention accessories, original packaging, manuals, or warranties</span>
                                         </div>
                                     </li>
