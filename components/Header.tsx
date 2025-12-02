@@ -149,6 +149,17 @@ export default function Header() {
 
 
                         <div className="h-px bg-gray-100 dark:bg-gray-800 my-1" />
+
+                        <Link
+                          href="/dashboard/profile"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center space-x-3 px-3 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
+                        >
+                          <User className="w-4 h-4 text-gray-400" />
+                          <span>Profile Settings</span>
+                        </Link>
+
+                        <div className="h-px bg-gray-100 dark:bg-gray-800 my-1" />
                         <button
                           onClick={handleSignOut}
                           className="w-full flex items-center space-x-3 px-3 py-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"

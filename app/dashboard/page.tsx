@@ -12,6 +12,8 @@ import {
 } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { toast } from 'react-hot-toast'
+import RecentActivity from '@/components/RecentActivity'
+import QuickActions from '@/components/QuickActions'
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth()
@@ -225,6 +227,12 @@ export default function DashboardPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* New Widgets Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <QuickActions />
+          <RecentActivity listings={listings} />
+        </div>
+
         {/* Filters & Search */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
           <div className="flex p-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
