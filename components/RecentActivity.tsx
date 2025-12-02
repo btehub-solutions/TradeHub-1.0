@@ -32,13 +32,13 @@ export default function RecentActivity({ listings }: { listings: Listing[] }) {
             })
 
             // Add "Sold" activity if applicable
-            // Note: We use updated_at as a proxy for sold date if status is sold
+            // Note: Using created_at since updated_at is not available in the Listing type
             if (listing.status === 'sold') {
                 newActivities.push({
                     id: `${listing.id}-sold`,
                     type: 'sold',
                     title: listing.title,
-                    date: new Date(listing.updated_at), // This might be inaccurate if updated for other reasons, but best we have
+                    date: new Date(listing.created_at),
                     listingId: listing.id
                 })
             }
