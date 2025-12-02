@@ -31,7 +31,7 @@ export default function CategoryGrid() {
         <div className="mb-16 animate-fade-in">
             <div className="text-center mb-10">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">Browse by Category</h2>
-                <p className="text-gray-600 dark:text-gray-400">Find exactly what you're looking for</p>
+                <p className="text-gray-600 dark:text-gray-400">Find exactly what you&apos;re looking for</p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-6">
