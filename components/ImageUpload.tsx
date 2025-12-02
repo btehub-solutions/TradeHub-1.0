@@ -38,6 +38,10 @@ export default function ImageUpload({
         }
     }
 
+    import { supabase } from '@/lib/supabase'
+
+    // ... imports
+
     const uploadImages = useCallback(async (files: File[]) => {
         if (images.length + files.length > maxImages) {
             toast.error(`Maximum ${maxImages} images allowed`)
@@ -45,13 +49,11 @@ export default function ImageUpload({
         }
 
         setUploading(true)
-        const formData = new FormData()
-        formData.append('userId', userId)
 
         try {
             // Compress images before upload
             const compressedFiles = await Promise.all(
-                files.map(async (file, index) => {
+                files.map(async (file) => {
                     setUploadProgress(prev => ({ ...prev, [file.name]: 0 }))
                     const compressed = await compressImage(file)
                     setUploadProgress(prev => ({ ...prev, [file.name]: 50 }))
@@ -59,30 +61,37 @@ export default function ImageUpload({
                 })
             )
 
-            // Add compressed files to form data
-            compressedFiles.forEach(file => {
-                formData.append('files', file)
-            })
+            const newUrls: string[] = []
 
-            // Upload to server
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData
-            })
+            for (const file of compressedFiles) {
+                const fileExt = file.name.split('.').pop()
+                const fileName = `${userId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
 
-            if (!response.ok) {
-                const error = await response.json()
-                throw new Error(error.error || 'Upload failed')
+                const { data, error } = await supabase.storage
+                    .from('listing-images')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: false
+                    })
+
+                if (error) {
+                    throw error
+                }
+
+                const { data: { publicUrl } } = supabase.storage
+                    .from('listing-images')
+                    .getPublicUrl(data.path)
+
+                newUrls.push(publicUrl)
+                setUploadProgress(prev => ({ ...prev, [file.name]: 100 }))
             }
 
-            const data = await response.json()
-
             // Update images array
-            onImagesChange([...images, ...data.urls])
+            onImagesChange([...images, ...newUrls])
 
             // Clear progress
             setUploadProgress({})
-            toast.success(`${data.count} image(s) uploaded successfully`)
+            toast.success(`${newUrls.length} image(s) uploaded successfully`)
 
         } catch (error: any) {
             console.error('Upload error:', error)
@@ -93,35 +102,26 @@ export default function ImageUpload({
         }
     }, [images, maxImages, userId, onImagesChange])
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        if (acceptedFiles.length > 0) {
-            uploadImages(acceptedFiles)
-        }
-    }, [uploadImages])
+    // ... onDrop
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-        accept: {
-            'image/jpeg': ['.jpg', '.jpeg'],
-            'image/png': ['.png'],
-            'image/webp': ['.webp'],
-            'image/gif': ['.gif']
-        },
-        maxFiles: maxImages - images.length,
-        disabled: uploading || images.length >= maxImages
-    })
+    // ... useDropzone
 
     const removeImage = async (index: number) => {
         const imageUrl = images[index]
 
         try {
-            // Delete from storage
-            const response = await fetch(`/api/upload?url=${encodeURIComponent(imageUrl)}&userId=${userId}`, {
-                method: 'DELETE'
-            })
+            // Extract path from URL
+            const path = imageUrl.split('/listing-images/')[1]
+            if (path) {
+                const { error } = await supabase.storage
+                    .from('listing-images')
+                    .remove([path])
 
-            if (!response.ok) {
-                throw new Error('Failed to delete image')
+                if (error) {
+                    console.error('Error deleting from storage:', error)
+                    // We continue to remove from state even if storage delete fails
+                    // to prevent UI from being stuck
+                }
             }
 
             // Remove from array

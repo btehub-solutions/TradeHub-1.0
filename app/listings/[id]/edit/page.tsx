@@ -110,7 +110,7 @@ export default function EditListingPage({ params }: { params: Promise<{ id: stri
             const filePath = `${user?.id}/${fileName}`
 
             const { error: uploadError } = await supabase.storage
-                .from('listings')
+                .from('listing-images')
                 .upload(filePath, file)
 
             if (uploadError) {
@@ -118,7 +118,7 @@ export default function EditListingPage({ params }: { params: Promise<{ id: stri
             }
 
             const { data } = supabase.storage
-                .from('listings')
+                .from('listing-images')
                 .getPublicUrl(filePath)
 
             urls.push(data.publicUrl)
