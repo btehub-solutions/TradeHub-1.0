@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState, Suspense } from 'react'
+import { useCallback, useEffect, useMemo, useState, Suspense, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, MapPin, TrendingUp, Images, AlertCircle, Lightbulb, Grid3x3, List, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
@@ -32,6 +32,7 @@ function HomeContent() {
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null)
   const itemsPerPage = 12
+  const listingsRef = useRef<HTMLDivElement>(null)
 
   // Sync state with URL params
   useEffect(() => {
@@ -176,6 +177,18 @@ function HomeContent() {
     setCurrentPage(1)
   }, [search, selectedCategory])
 
+  // Scroll to listings when page changes
+  useEffect(() => {
+    if (currentPage > 1 || (currentPage === 1 && listingsRef.current)) {
+      // Only scroll if we are not at the top (simple check) or if it's a page change
+      // We use a small timeout to ensure DOM is ready if needed, though usually not required in React
+      // But here we just want to scroll if the user is deep down the page
+      if (window.scrollY > 400) {
+        listingsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+  }, [currentPage])
+
   // Auto-rotate ads every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -252,6 +265,8 @@ function HomeContent() {
             </div>
           </div>
         </div>
+
+        <div ref={listingsRef} className="scroll-mt-24"></div>
 
         {/* Results Info & View Toggle */}
         <div className="flex items-center justify-between mb-6">

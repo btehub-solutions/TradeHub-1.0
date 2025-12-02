@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { X, MapPin, User, Phone, ArrowRight, Images, ExternalLink } from 'lucide-react'
+import { X, MapPin, User, Phone, ArrowRight, Images, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Listing, CATEGORY_ICONS } from '@/lib/supabase'
 import * as Icons from 'lucide-react'
 
@@ -65,7 +65,7 @@ export default function QuickViewModal({ listing, onClose }: QuickViewModalProps
                 {/* Image Section */}
                 <div className="w-full md:w-1/2 bg-gray-100 dark:bg-slate-800 relative h-64 md:h-auto md:min-h-full flex-shrink-0">
                     {images.length > 0 ? (
-                        <div className="relative w-full h-full">
+                        <div className="relative w-full h-full group">
                             <img
                                 src={images[currentImageIndex]}
                                 alt={listing.title}
@@ -74,21 +74,44 @@ export default function QuickViewModal({ listing, onClose }: QuickViewModalProps
 
                             {/* Image Navigation if multiple */}
                             {images.length > 1 && (
-                                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 px-4">
-                                    {images.map((_, idx) => (
-                                        <button
-                                            key={idx}
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                setCurrentImageIndex(idx)
-                                            }}
-                                            className={`w-2 h-2 rounded-full transition-all ${currentImageIndex === idx
-                                                ? 'bg-white w-6'
-                                                : 'bg-white/50 hover:bg-white/80'
-                                                }`}
-                                        />
-                                    ))}
-                                </div>
+                                <>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
+                                        }}
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-md transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10"
+                                        aria-label="Previous image"
+                                    >
+                                        <ChevronLeft className="w-6 h-6" />
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
+                                        }}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-md transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10"
+                                        aria-label="Next image"
+                                    >
+                                        <ChevronRight className="w-6 h-6" />
+                                    </button>
+
+                                    <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 px-4 z-10">
+                                        {images.map((_, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    setCurrentImageIndex(idx)
+                                                }}
+                                                className={`w-2 h-2 rounded-full transition-all ${currentImageIndex === idx
+                                                    ? 'bg-white w-6'
+                                                    : 'bg-white/50 hover:bg-white/80'
+                                                    }`}
+                                            />
+                                        ))}
+                                    </div>
+                                </>
                             )}
                         </div>
                     ) : (
