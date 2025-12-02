@@ -63,7 +63,7 @@ export default function QuickViewModal({ listing, onClose }: QuickViewModalProps
                 </button>
 
                 {/* Image Section */}
-                <div className="w-full md:w-1/2 bg-gray-100 dark:bg-slate-800 relative min-h-[200px] md:min-h-full">
+                <div className="w-full md:w-1/2 bg-gray-100 dark:bg-slate-800 relative h-64 md:h-auto md:min-h-full flex-shrink-0">
                     {images.length > 0 ? (
                         <div className="relative w-full h-full">
                             <img
