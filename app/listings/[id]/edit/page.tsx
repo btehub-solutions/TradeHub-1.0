@@ -50,7 +50,7 @@ export default function EditListingPage({ params }: { params: Promise<{ id: stri
     // Fetch listing data
     useEffect(() => {
         const fetchListing = async () => {
-            if (!listingId || !user) return
+            if (!listingId || !user?.id) return
 
             setFetchingListing(true)
             try {
@@ -99,7 +99,7 @@ export default function EditListingPage({ params }: { params: Promise<{ id: stri
         }
 
         fetchListing()
-    }, [listingId, user, router])
+    }, [listingId, user?.id, router])
 
     const uploadImages = async () => {
         const urls: string[] = []

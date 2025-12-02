@@ -50,7 +50,7 @@ export default function DashboardPage() {
   }, [user, authLoading, router])
 
   const fetchMyListings = useCallback(async () => {
-    if (!user) return
+    if (!user?.id) return
 
     setLoading(true)
     try {
@@ -74,13 +74,13 @@ export default function DashboardPage() {
     } finally {
       setLoading(false)
     }
-  }, [user])
+  }, [user?.id])
 
   useEffect(() => {
-    if (user) {
+    if (user?.id) {
       fetchMyListings()
     }
-  }, [user, fetchMyListings])
+  }, [user?.id, fetchMyListings])
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this listing?')) return
