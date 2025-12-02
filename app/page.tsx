@@ -15,6 +15,7 @@ import ListingCard from '@/components/ListingCard'
 import QuickViewModal from '@/components/QuickViewModal'
 import Testimonials from '@/components/Testimonials'
 import TrustBadges from '@/components/TrustBadges'
+import StructuredData from '@/components/StructuredData'
 
 
 function HomeContent() {
@@ -192,6 +193,10 @@ function HomeContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-slate-900 dark:to-slate-800">
+      {/* Structured Data for SEO */}
+      <StructuredData type="website" />
+      <StructuredData type="organization" />
+
       {/* Hero Header */}
       <HeroHeader />
 
@@ -248,8 +253,6 @@ function HomeContent() {
           </div>
         </div>
 
-
-
         {/* Results Info & View Toggle */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-600 dark:text-slate-300 font-medium">
@@ -280,125 +283,127 @@ function HomeContent() {
               <List className="w-4 h-4" />
             </button>
           </div>
-        </div>
+        </div >
 
         {/* Listings Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {skeletonItems.map((_, index) => (
-              <div key={index} className="bg-white rounded-2xl shadow-soft p-4 space-y-4">
-                <Skeleton className="h-48 w-full rounded-xl" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-1/3" />
-                  <Skeleton className="h-4 w-2/3" />
-                  <Skeleton className="h-4 w-1/2" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : filteredListings.length === 0 ? (
-          <div className="text-center py-20 animate-fade-in">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-10 h-10 text-gray-400" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No items found</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">Try adjusting your search or category filter</p>
-            <Link href="/listings/new">
-              <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all">
-                Post the first item
-              </button>
-            </Link>
-          </div>
-        ) : (
-          <>
-            <div className={`grid gap-6 ${viewMode === 'single'
-              ? 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'
-              : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-              }`}>
-              {paginatedListings.map((listing, index) => (
-                <div
-                  key={listing.id}
-                  className="animate-scale-in"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <ListingCard
-                    listing={listing}
-                    onQuickView={setSelectedListing}
-                  />
+        {
+          loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {skeletonItems.map((_, index) => (
+                <div key={index} className="bg-white rounded-2xl shadow-soft p-4 space-y-4">
+                  <Skeleton className="h-48 w-full rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-1/3" />
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
                 </div>
               ))}
             </div>
-
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="mt-12 flex flex-col items-center gap-6">
-                {/* Page Numbers */}
-                <div className="flex items-center gap-2 flex-wrap justify-center">
-                  {/* Previous Button */}
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                    className="p-2 rounded-lg bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                    aria-label="Previous page"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-
-                  {/* Page Numbers */}
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
-                    // Show first page, last page, current page, and pages around current
-                    const showPage =
-                      pageNum === 1 ||
-                      pageNum === totalPages ||
-                      (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
-
-                    // Show ellipsis
-                    const showEllipsisBefore = pageNum === currentPage - 2 && currentPage > 3
-                    const showEllipsisAfter = pageNum === currentPage + 2 && currentPage < totalPages - 2
-
-                    if (showEllipsisBefore || showEllipsisAfter) {
-                      return (
-                        <span key={pageNum} className="px-2 text-gray-400 dark:text-gray-600">
-                          ...
-                        </span>
-                      )
-                    }
-
-                    if (!showPage) return null
-
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={`min-w-[40px] h-10 px-3 rounded-lg font-medium transition-all ${currentPage === pageNum
-                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30'
-                          : 'bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700/70 shadow-soft hover:shadow-medium'
-                          }`}
-                      >
-                        {pageNum}
-                      </button>
-                    )
-                  })}
-
-                  {/* Next Button */}
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                    className="p-2 rounded-lg bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                    aria-label="Next page"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
-
-                {/* Page Info */}
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Showing {startIndex + 1}-{Math.min(endIndex, filteredListings.length)} of {filteredListings.length} items
-                </p>
+          ) : filteredListings.length === 0 ? (
+            <div className="text-center py-20 animate-fade-in">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-10 h-10 text-gray-400" />
               </div>
-            )}
-          </>
-        )}
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No items found</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">Try adjusting your search or category filter</p>
+              <Link href="/listings/new">
+                <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all">
+                  Post the first item
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className={`grid gap-6 ${viewMode === 'single'
+                ? 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'
+                : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                }`}>
+                {paginatedListings.map((listing, index) => (
+                  <div
+                    key={listing.id}
+                    className="animate-scale-in"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <ListingCard
+                      listing={listing}
+                      onQuickView={setSelectedListing}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="mt-12 flex flex-col items-center gap-6">
+                  {/* Page Numbers */}
+                  <div className="flex items-center gap-2 flex-wrap justify-center">
+                    {/* Previous Button */}
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-lg bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+
+                    {/* Page Numbers */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                      // Show first page, last page, current page, and pages around current
+                      const showPage =
+                        pageNum === 1 ||
+                        pageNum === totalPages ||
+                        (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+
+                      // Show ellipsis
+                      const showEllipsisBefore = pageNum === currentPage - 2 && currentPage > 3
+                      const showEllipsisAfter = pageNum === currentPage + 2 && currentPage < totalPages - 2
+
+                      if (showEllipsisBefore || showEllipsisAfter) {
+                        return (
+                          <span key={pageNum} className="px-2 text-gray-400 dark:text-gray-600">
+                            ...
+                          </span>
+                        )
+                      }
+
+                      if (!showPage) return null
+
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`min-w-[40px] h-10 px-3 rounded-lg font-medium transition-all ${currentPage === pageNum
+                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30'
+                            : 'bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700/70 shadow-soft hover:shadow-medium'
+                            }`}
+                        >
+                          {pageNum}
+                        </button>
+                      )
+                    })}
+
+                    {/* Next Button */}
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-lg bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                      aria-label="Next page"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Page Info */}
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Showing {startIndex + 1}-{Math.min(endIndex, filteredListings.length)} of {filteredListings.length} items
+                  </p>
+                </div>
+              )}
+            </>
+          )
+        }
 
         {/* Testimonials Section */}
         <Testimonials />
@@ -525,15 +530,17 @@ function HomeContent() {
             </div>
           </div>
         </div>
-      </div>
+      </div >
       {/* Quick View Modal */}
-      {selectedListing && (
-        <QuickViewModal
-          listing={selectedListing}
-          onClose={() => setSelectedListing(null)}
-        />
-      )}
-    </div>
+      {
+        selectedListing && (
+          <QuickViewModal
+            listing={selectedListing}
+            onClose={() => setSelectedListing(null)}
+          />
+        )
+      }
+    </div >
   )
 }
 

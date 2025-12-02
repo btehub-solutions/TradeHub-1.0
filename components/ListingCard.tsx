@@ -22,10 +22,13 @@ export default function ListingCard({ listing, onQuickView, priority = false }: 
     <div className="group relative bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-blue-500/10 dark:shadow-slate-900/50 transition-all duration-300 hover:-translate-y-1 backdrop-blur-sm h-full flex flex-col border border-gray-100 dark:border-slate-700/50">
       <Link href={`/listings/${listing.id}`} className="block relative h-48 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 rounded-t-2xl">
         {listing.image_url ? (
-          <img
+          <Image
             src={listing.image_url}
             alt={listing.title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+            priority={priority}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
