@@ -350,12 +350,16 @@ function HomeContent() {
 
               {/* Pagination Controls */}
               {totalPages > 1 && (
-                <div className="mt-12 flex flex-col items-center gap-6">
+                <div className="mt-12 mb-12 flex flex-col items-center gap-6">
                   {/* Page Numbers */}
                   <div className="flex items-center gap-2 flex-wrap justify-center">
                     {/* Previous Button */}
                     <button
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setCurrentPage(prev => Math.max(1, prev - 1))
+                      }}
                       disabled={currentPage === 1}
                       className="p-2 rounded-lg bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                       aria-label="Previous page"
@@ -388,7 +392,11 @@ function HomeContent() {
                       return (
                         <button
                           key={pageNum}
-                          onClick={() => setCurrentPage(pageNum)}
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setCurrentPage(pageNum)
+                          }}
                           className={`min-w-[40px] h-10 px-3 rounded-lg font-medium transition-all ${currentPage === pageNum
                             ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30'
                             : 'bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700/70 shadow-soft hover:shadow-medium'
@@ -401,7 +409,11 @@ function HomeContent() {
 
                     {/* Next Button */}
                     <button
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setCurrentPage(prev => Math.min(totalPages, prev + 1))
+                      }}
                       disabled={currentPage === totalPages}
                       className="p-2 rounded-lg bg-white dark:bg-slate-800/70 dark:border dark:border-slate-700/50 text-gray-700 dark:text-slate-200 shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                       aria-label="Next page"
