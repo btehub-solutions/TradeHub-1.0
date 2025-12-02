@@ -480,6 +480,27 @@ function HomeContent() {
           </div>
         </div>
 
+        {/* Grow Your Business Section */}
+        <div className="mb-16 animate-fade-in">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden shadow-xl">
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+            <div className="relative z-10 max-w-3xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                Grow Your Business with TradeHub
+              </h2>
+              <p className="text-blue-100 mb-8 text-lg">
+                Reach thousands of local customers where they shop. Promote your products or services directly to a targeted audience in your community.
+              </p>
+              <Link href="/advertise">
+                <button className="inline-flex items-center px-8 py-3 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                  Advertise with Us
+                  <TrendingUp className="w-5 h-5 ml-2" />
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
         {/* Why We Built This Platform Section */}
         <div className="mb-16 animate-fade-in">
           <div className="text-center mb-10">
@@ -507,27 +528,6 @@ function HomeContent() {
               iconBgColor="bg-green-50 dark:bg-green-900/20"
               iconColor="text-green-600 dark:text-green-400"
             />
-          </div>
-        </div>
-
-        {/* Grow Your Business Section */}
-        <div className="mb-16 animate-fade-in">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden shadow-xl">
-            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
-            <div className="relative z-10 max-w-3xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                Grow Your Business with TradeHub
-              </h2>
-              <p className="text-blue-100 mb-8 text-lg">
-                Reach thousands of local customers where they shop. Promote your products or services directly to a targeted audience in your community.
-              </p>
-              <Link href="/advertise">
-                <button className="inline-flex items-center px-8 py-3 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl hover:scale-105">
-                  Advertise with Us
-                  <TrendingUp className="w-5 h-5 ml-2" />
-                </button>
-              </Link>
-            </div>
           </div>
         </div>
       </div >
