@@ -85,7 +85,7 @@ export default function RecentActivity({ listings }: { listings: Listing[] }) {
                                     {activity.type === 'sold' ? 'Item Sold' : 'New Listing'}
                                 </p>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                                    You {activity.type === 'sold' ? 'marked' : 'listed'} <span className="font-medium text-gray-700 dark:text-gray-300">"{activity.title}"</span> {activity.type === 'sold' ? 'as sold' : ''}
+                                    You {activity.type === 'sold' ? 'marked' : 'listed'} <span className="font-medium text-gray-700 dark:text-gray-300">&ldquo;{activity.title}&rdquo;</span> {activity.type === 'sold' ? 'as sold' : ''}
                                 </p>
                                 <span className="text-xs text-gray-400 mt-2 block">
                                     {activity.date.toLocaleDateString()} • {activity.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
