@@ -102,7 +102,8 @@ function HomeContent() {
           throw new Error('Failed to fetch listings')
         }
 
-        const data: Listing[] = await response.json()
+        const responseData = await response.json()
+        const data = Array.isArray(responseData) ? responseData : (responseData.data || [])
         setListings(data)
         setError(null)
       } catch (err: any) {
