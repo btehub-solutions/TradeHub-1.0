@@ -66,15 +66,18 @@ export default function DashboardPage() {
         throw new Error(errorBody?.error || 'Failed to load your listings')
       }
 
-      const listingsData = await listingsResponse.json()
+      const responseData = await listingsResponse.json()
+
+      // Handle paginated response structure
+      const listingsData = Array.isArray(responseData) ? responseData : (responseData.data || [])
 
       if (Array.isArray(listingsData)) {
         setListings(listingsData)
       } else {
-        console.error('Listings data is not an array:', listingsData)
+        console.error('Listings data is not an array:', responseData)
         setListings([])
-        if (listingsData?.error) {
-          toast.error(listingsData.error)
+        if (responseData?.error) {
+          toast.error(responseData.error)
         }
       }
 
